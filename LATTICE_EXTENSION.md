@@ -174,6 +174,9 @@ longitudinal mode per ring unless stated:
 | Pendulum, AQH 4 × 4 | `edge` | 4 | **−249 ± 175** | −638 / −2 |
 | Pendulum, AQH 4 × 4 | `all` | 14 | −374 ± 469 | −1508 / −1 |
 | Pendulum, AQH 4 × 4, 64 modes per ring | `edge` | 4 | −257 ± 178 | −693 / −2 |
+| Pendulum, AQH 4 × 4, optical power / 10 | `edge` | 4 | −831 ± 531 | −1519 / −6 |
+| Pendulum, AQH 4 × 4, optical power / 100 | `edge` | 4 | −690 ± 540 | −1519 / −5 |
+| Pendulum, AQH 4 × 4, chaotic comb (`topo_chaos`) | `edge` | 4 | −889 ± 291 | −1514 / −516 |
 | LunarLander, zigzag 6 × 6 | `edge` | 9 | **+263 ± 41** | +62 / +313 |
 | LunarLander, zigzag 6 × 6 | `all` | 66 | +224 ± 81 | −21 / +299 |
 
@@ -199,7 +202,7 @@ simulation, which cannot show it, is then wrong); at F₀² = 1000 nothing does,
 tones at their largest amplitude 2ε = 2, while tones of amplitude 4 push it over the threshold.
 Hence F₀² = 1000 and ε = 1.
 
-## Two questions the runs are meant to answer
+## Three questions the runs are meant to answer
 
 **1. Is one longitudinal mode per ring enough?** The claim is that below the comb threshold the
 light never leaves the pump's longitudinal mode, so that the other modes need not be simulated.
@@ -246,6 +249,32 @@ What `edge` sufficing does and does not mean: the edge lines sit at the drive fr
 contain the linearly transmitted tones as well as the mixing products. `--mini_comb bulk`, which
 reads only lines that four-wave mixing fills, is the control that separates the two; it has not
 been run yet. And every number here is one seed.
+
+**3. Does the lattice compute, or does detecting powers suffice?** Even a linear lattice gives a
+nonlinear feature when a power is detected: the edge line of tone k is then |ε(1 + s̃_k)|², the
+square of its own input, with no mixing between the inputs. The control is the same training with
+the light turned down: pump and tones scaled together (F₀² and ε² by 1/10 and 1/100), so that the
+drive keeps its shape and every four-wave-mixing product weakens with it. The features are
+standardised before the readout, so nothing else changes.
+
+![The same training with the optical power turned down](results/characterization/07_power_control.png)
+
+(`characterization/07_power_control.py`.) On the pendulum the answer is clear: at a tenth and at a
+hundredth of the power the policy ends at −831 ± 531 and −690 ± 540, the level of the linear policy
+without any lattice (−718…−1038), against −249 ± 175 at full power. Like the linear policy, the
+low-power ones swing up from some initial conditions and never from others (right panel). The
+squares that power detection provides are not enough for this task; what the full-power lattice
+adds — the mixing of different inputs by four-wave mixing between the edge supermodes — is what
+solves it. (That −690 is better than −831 is within the scatter of such runs.) The same control on
+LunarLander is running.
+
+The figure also shows the opposite direction, the pump above the comb threshold
+(`--regime topo_chaos`: F₀² = 800, ε = 3, 64 modes per ring, the power in the band δ around every
+line averaged over the periods of the window, T_avg = 25; 32 lattices, 150 updates). It does not
+learn the swing-up either: −889 ± 291. The comb is chaotic there, and its noise swamps the inputs —
+before the training the driven lines had a contrast-to-noise ratio of 5–7 at this operating point
+and all other lines below 1. So for this lattice the useful regime is below threshold, where the
+response is periodic and noise-free, not the chaotic comb.
 
 `python animate_mini.py --env Pendulum-v1` (or `--env LunarLander-v3`; `--tag all` for the policy
 that reads all lines) replays one greedy episode from a
