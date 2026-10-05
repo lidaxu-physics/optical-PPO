@@ -179,13 +179,15 @@ longitudinal mode per ring unless stated:
 | Pendulum, AQH 4 × 4, chaotic comb (`topo_chaos`) | `edge` | 4 | −889 ± 291 | −1514 / −516 |
 | LunarLander, zigzag 6 × 6 | `edge` | 9 | **+263 ± 41** | +62 / +313 |
 | LunarLander, zigzag 6 × 6 | `all` | 66 | +224 ± 81 | −21 / +299 |
+| LunarLander, zigzag 6 × 6, optical power / 10 | `edge` | 9 | +135 ± 95 | −78 / +249 |
+| LunarLander, zigzag 6 × 6, optical power / 100 | `edge` | 9 | +260 ± 28 | +124 / +301 |
 
 For comparison (frozen evaluations of the single-ring part of this repository): on the pendulum a
 linear policy reaches −718…−1038 and the best single-ring regime −196…−252; on LunarLander the
 linear policy +7…+106 and the best single ring +255…+263 (solved means above 200). So the mini-comb
-computes — neither task is within reach of a linear readout of the inputs — and it does so at the
-level of the single ring, from one longitudinal mode, with as many read-out lines as there are
-drive lines. In the simulation of the pendulum 99.5 % of the light is in the four edge supermodes
+reaches the level of the single ring on both tasks, from one longitudinal mode, with as many
+read-out lines as there are drive lines. Whether the lattice's nonlinearity is what does it is
+question 3 below: on the pendulum yes, on LunarLander no. In the simulation of the pendulum 99.5 % of the light is in the four edge supermodes
 and 99.9 % on the boundary rings.
 
 **LunarLander on zigzag 6 × 6.** J = 40, dt = 0.0025, pump on σ = 26, tones on σ = 27…34, F₀² = 1000,
@@ -265,8 +267,16 @@ without any lattice (−718…−1038), against −249 ± 175 at full power. Lik
 low-power ones swing up from some initial conditions and never from others (right panel). The
 squares that power detection provides are not enough for this task; what the full-power lattice
 adds — the mixing of different inputs by four-wave mixing between the edge supermodes — is what
-solves it. (That −690 is better than −831 is within the scatter of such runs.) The same control on
-LunarLander is running.
+solves it. (That −690 is better than −831 is within the scatter of such runs.)
+
+LunarLander gives the opposite answer (bottom row). At a hundredth of the power the policy lands as
+well as at full power, +260 ± 28 against +263 ± 41: the squares of the individual inputs, which
+power detection provides without any lattice nonlinearity, are enough for this task (explicit
+quadratic features also solve it, and a purely linear policy does not, +7…+106). So the +263 of
+the mini-comb on LunarLander is no evidence that the lattice computes; the pendulum is. At a tenth
+of the power the same training ends at +135 ± 95, no better than the linear policy. Why the
+intermediate power is the worst of the three — on both tasks — is not understood; with one seed
+per point it may also be chance, and it is the first thing more seeds should settle.
 
 The figure also shows the opposite direction, the pump above the comb threshold
 (`--regime topo_chaos`: F₀² = 800, ε = 3, 64 modes per ring, the power in the band δ around every
