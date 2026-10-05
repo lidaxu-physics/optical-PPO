@@ -166,29 +166,37 @@ at n = −1) is not driven, and beyond n = +8 the lines fall between bulk superm
 
 ## Results
 
-Frozen greedy evaluation over 64 episodes, one seed each, pump below the comb threshold, one
-longitudinal mode per ring unless stated:
+Frozen greedy evaluation, one seed each. "Modes μ" is the number of longitudinal modes simulated
+per ring: 1 means μ = 0 alone, the mode of the pump and the tones; 64 means μ = −32…31. F₀² is the
+pump power and ε the tone amplitude at zero input (a tone has power ε²(1 + s̃)², at most 4ε²), both
+in the normalised units of the LLE, the same as for the single ring (whose chaos preset is F₀² = 10,
+ε = 0.6). "Lines" is what the policy reads: `edge` the lines of the driven supermodes, `all` every
+line in the band.
 
-| task, lattice | lines read | features | return | worst / best episode |
-|---|---|---|---|---|
-| Pendulum, AQH 4 × 4 | `edge` | 4 | **−249 ± 175** | −638 / −2 |
-| Pendulum, AQH 4 × 4 | `all` | 14 | −374 ± 469 | −1508 / −1 |
-| Pendulum, AQH 4 × 4, 64 modes per ring | `edge` | 4 | −257 ± 178 | −693 / −2 |
-| Pendulum, AQH 4 × 4, optical power / 10 | `edge` | 4 | −831 ± 531 | −1519 / −6 |
-| Pendulum, AQH 4 × 4, optical power / 100 | `edge` | 4 | −690 ± 540 | −1519 / −5 |
-| Pendulum, AQH 4 × 4, chaotic comb (`topo_chaos`) | `edge` | 4 | −889 ± 291 | −1514 / −516 |
-| LunarLander, zigzag 6 × 6 | `edge` | 9 | **+263 ± 41** | +62 / +313 |
-| LunarLander, zigzag 6 × 6 | `all` | 66 | +224 ± 81 | −21 / +299 |
-| LunarLander, zigzag 6 × 6, optical power / 10 | `edge` | 9 | +135 ± 95 | −78 / +249 |
-| LunarLander, zigzag 6 × 6, optical power / 100 | `edge` | 9 | +260 ± 28 | +124 / +301 |
+| task | lattice | modes μ | F₀² | ε | lines (features) | return | worst / best episode |
+|---|---|---|---|---|---|---|---|
+| Pendulum | AQH 4 × 4 | 1 (μ = 0) | 100 | 0.6 | `edge` (4) | **−249 ± 175** | −638 / −2 |
+| Pendulum | AQH 4 × 4 | 1 (μ = 0) | 100 | 0.6 | `all` (14) | −374 ± 469 | −1508 / −1 |
+| Pendulum | AQH 4 × 4 | 64 | 100 | 0.6 | `edge` (4) | −257 ± 178 | −693 / −2 |
+| Pendulum, power / 10 | AQH 4 × 4 | 1 (μ = 0) | 10 | 0.19 | `edge` (4) | −831 ± 531 | −1519 / −6 |
+| Pendulum, power / 100 | AQH 4 × 4 | 1 (μ = 0) | 1 | 0.06 | `edge` (4) | −690 ± 540 | −1519 / −5 |
+| Pendulum, chaotic comb | AQH 4 × 4 | 64 | 800 | 3.0 | `edge` (4) | −889 ± 291 | −1514 / −516 |
+| LunarLander | zigzag 6 × 6 | 1 (μ = 0) | 1000 | 1.0 | `edge` (9) | **+263 ± 41** | +62 / +313 |
+| LunarLander | zigzag 6 × 6 | 1 (μ = 0) | 1000 | 1.0 | `all` (66) | +224 ± 81 | −21 / +299 |
+| LunarLander, power / 10 | zigzag 6 × 6 | 1 (μ = 0) | 100 | 0.32 | `edge` (9) | +135 ± 95 | −78 / +249 |
+| LunarLander, power / 100 | zigzag 6 × 6 | 1 (μ = 0) | 10 | 0.10 | `edge` (9) | +260 ± 28 | +124 / +301 |
+
+All runs but the chaotic comb are below the comb threshold of their lattice (about F₀² = 100–150 on
+AQH 4 × 4, between 1000 and 1600 on zigzag 6 × 6), where the modes μ ≠ 0 stay empty. The chaotic comb
+was evaluated over 32 episodes, all others over 64. J = 20 on AQH 4 × 4 and 40 on zigzag 6 × 6.
 
 For comparison (frozen evaluations of the single-ring part of this repository): on the pendulum a
 linear policy reaches −718…−1038 and the best single-ring regime −196…−252; on LunarLander the
 linear policy +7…+106 and the best single ring +255…+263 (solved means above 200). So the mini-comb
 reaches the level of the single ring on both tasks, from one longitudinal mode, with as many
 read-out lines as there are drive lines. Whether the lattice's nonlinearity is what does it is
-question 3 below: on the pendulum yes, on LunarLander no. In the simulation of the pendulum 99.5 % of the light is in the four edge supermodes
-and 99.9 % on the boundary rings.
+question 3 below: on the pendulum yes, on LunarLander no. In the simulation of the pendulum
+99.5 % of the light is in the four edge supermodes and 99.9 % on the boundary rings.
 
 **LunarLander on zigzag 6 × 6.** J = 40, dt = 0.0025, pump on σ = 26, tones on σ = 27…34, F₀² = 1000,
 ε = 1, T_relax = 2, T_avg = 3.5 (three periods of the mini-comb), 400 updates:
