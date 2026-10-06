@@ -1,0 +1,216 @@
+{
+  "lattice": {
+    "model": "zigzag AQH (Haldane-type) coupled-ring lattice, LLE per ring",
+    "nx": 6,
+    "ny": 6,
+    "R": 60,
+    "J": 80.0,
+    "phi": 0.7853981633974483,
+    "spin": "+1",
+    "d2": 0.0125,
+    "kex": 1.0,
+    "N_modes": 64,
+    "dt": 0.0025,
+    "pump_site": 0,
+    "drop_site": 55,
+    "pump_supermode_sigma": 29,
+    "pump_supermode_lambda": -5.2396027380940104,
+    "pump_supermode_overlap": 0.04161824976538826,
+    "boundary_sites_ccw": [
+      16,
+      5,
+      0,
+      1,
+      2,
+      3,
+      4,
+      10,
+      21,
+      32,
+      43,
+      54,
+      59,
+      58,
+      57,
+      56,
+      55,
+      49,
+      38,
+      27
+    ],
+    "units": "kappa_in = kappa/2 = 1; time in 2/kappa (lifetimes); Delta = (2/kappa)(omega_res - omega_pump), Delta > 0 is RED (opposite sign to the Topological Photonics Explorer convention)",
+    "equation": "dA_r/dt = [-(1 + i Delta) - i d2 mu^2] A_r,mu - i sum_r' H_rr' A_r',mu - kappa_ex,r A_r,mu + i FT[|psi_r|^2 psi_r]_mu + F_r delta_mu,0",
+    "drive": "single CW tone on ring 0, F0 = sqrt(F0_squared), placed so that the pumped edge supermode sits at Delta_eff (solver Delta = Delta_eff - lambda_sigma)"
+  },
+  "states": {
+    "linear_P500_D1.00": {
+      "F0_squared": 500,
+      "Delta_eff": 1.0,
+      "Delta_raw": 6.2396027380940104,
+      "n_envelopes": 0,
+      "description": "Below threshold: linear tilted resonance, no comb. Reference state.",
+      "source": "sweep_P500_J80_fine.npz:snap_+1.00[-1]",
+      "fingerprint": {
+        "lattice_power": 15.625170246573138,
+        "drop_phi_contrast": 1.0000000000000044,
+        "boundary_env_contrast": 0.003552713678800501
+      }
+    },
+    "chaos_P3500_D3.10": {
+      "F0_squared": 3500,
+      "Delta_eff": 3.1,
+      "Delta_raw": 8.33960273809401,
+      "n_envelopes": 0,
+      "description": "Developed MI chaos: power wanders, fine spectra filled.",
+      "source": "sweep_P3500_J80.npz:snap_+3.10[-1]",
+      "fingerprint": {
+        "lattice_power": 58.98608983030167,
+        "drop_phi_contrast": 10.271573756851355,
+        "boundary_env_contrast": 1.5267292663690324
+      }
+    },
+    "cw_P3500_D4.80": {
+      "F0_squared": 3500,
+      "Delta_eff": 4.8,
+      "Delta_raw": 10.039602738094011,
+      "n_envelopes": 0,
+      "description": "CW lower branch at the same point as turing3_P3500_D4.80 (cold start) \u2014 multistability.",
+      "source": "verify_P3500_D+4.80.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 12.651138245586832,
+        "drop_phi_contrast": 1.0000000000000027,
+        "boundary_env_contrast": 0.0033306690738754696
+      }
+    },
+    "turing3_P3500_D4.80": {
+      "F0_squared": 3500,
+      "Delta_eff": 4.8,
+      "Delta_raw": 10.039602738094011,
+      "n_envelopes": 3,
+      "description": "Edge-uniform Turing-3: 3 equidistant phi-pulses, every boundary ring in phase (k=0).",
+      "source": "verify_P3500_D+4.80_warm.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 23.511408777231612,
+        "drop_phi_contrast": 16.051396148324105,
+        "boundary_env_contrast": 1.2090327869099573
+      }
+    },
+    "soliton2_P3500_D4.90": {
+      "F0_squared": 3500,
+      "Delta_eff": 4.9,
+      "Delta_raw": 10.13960273809401,
+      "n_envelopes": 2,
+      "description": "Two stationary pulses per ring; power = CW + 2 x 3.6 (quantisation family).",
+      "source": "surgery_keep2.npz:a",
+      "fingerprint": {
+        "lattice_power": 19.796684707044534,
+        "drop_phi_contrast": 16.39733714971488,
+        "boundary_env_contrast": 1.2221253057174604
+      }
+    },
+    "soliton1_P3500_D4.90": {
+      "F0_squared": 3500,
+      "Delta_eff": 4.9,
+      "Delta_raw": 10.13960273809401,
+      "n_envelopes": 1,
+      "description": "HERO-1: single stationary soliton per boundary ring, k=0 along the edge (NOT nested). Prepared by pulse surgery on turing3; drift 1e-15 over 800 lifetimes.",
+      "source": "surgery_keep1.npz:a",
+      "fingerprint": {
+        "lattice_power": 16.123743873298793,
+        "drop_phi_contrast": 16.299811350642646,
+        "boundary_env_contrast": 1.2178064322810382
+      }
+    },
+    "chaos_P6500_D1.00": {
+      "F0_squared": 6500,
+      "Delta_eff": 1.0,
+      "Delta_raw": 6.2396027380940104,
+      "n_envelopes": 0,
+      "description": "Chaos already owns the blue side at this pump (no Turing window here).",
+      "source": "verify_P6500_D+1.00_blue10.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 67.42019061044829,
+        "drop_phi_contrast": 5.945128846758457,
+        "boundary_env_contrast": 1.545561661151473
+      }
+    },
+    "chaos_P6500_D4.50": {
+      "F0_squared": 6500,
+      "Delta_eff": 4.5,
+      "Delta_raw": 9.73960273809401,
+      "n_envelopes": 0,
+      "description": "Developed chaos just before the collapse at 5.2.",
+      "source": "verify_P6500_D+4.50_chaos45.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 99.97390705068814,
+        "drop_phi_contrast": 6.025716220958732,
+        "boundary_env_contrast": 1.478865843421254
+      }
+    },
+    "gas_P6500_D5.50": {
+      "F0_squared": 6500,
+      "Delta_eff": 5.5,
+      "Delta_raw": 10.73960273809401,
+      "n_envelopes": 10,
+      "description": "Dense edge soliton gas, metastable: evaporated one envelope at t ~ 250 lifetimes.",
+      "source": "verify_P6500_D+5.50_shelf55.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 30.164713110629318,
+        "drop_phi_contrast": 12.618383326373364,
+        "boundary_env_contrast": 1.9020961947941664
+      }
+    },
+    "gas_P6500_D5.90": {
+      "F0_squared": 6500,
+      "Delta_eff": 5.9,
+      "Delta_raw": 11.13960273809401,
+      "n_envelopes": 9,
+      "description": "Edge soliton gas: ~9 pulses localised in both ring and phi, disordered.",
+      "source": "verify_P6500_D+5.90_shelf59.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 27.942744634793172,
+        "drop_phi_contrast": 8.527150043766252,
+        "boundary_env_contrast": 2.218701036138617
+      }
+    },
+    "crystal_P6500_D6.30": {
+      "F0_squared": 6500,
+      "Delta_eff": 6.3,
+      "Delta_raw": 11.539602738094011,
+      "n_envelopes": 5,
+      "description": "Nested soliton crystal: ~5 pulses, clean periodic sawtooth in the power, rigid 2D comb.",
+      "source": "verify_P6500_D+6.30_shelf63.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 26.26293482526483,
+        "drop_phi_contrast": 9.876738998041912,
+        "boundary_env_contrast": 6.100824225891817
+      }
+    },
+    "nested_soliton_P6500_D6.60": {
+      "F0_squared": 6500,
+      "Delta_eff": 6.6,
+      "Delta_raw": 11.83960273809401,
+      "n_envelopes": 1,
+      "description": "*** THE RESULT *** Single nested travelling edge soliton: ONE envelope localised in boundary-ring AND phi, circulating the 20-ring edge in ~61 lifetimes (chiral, one direction), rigid equidistant comb across all teeth. Verified 1100 lifetimes.",
+      "source": "verify_P6500_D+6.60_long.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 23.727280710213332,
+        "drop_phi_contrast": 9.165869264550166,
+        "boundary_env_contrast": 79.04611423768092
+      }
+    },
+    "cw_P6500_D6.90": {
+      "F0_squared": 6500,
+      "Delta_eff": 6.9,
+      "Delta_raw": 12.13960273809401,
+      "n_envelopes": 0,
+      "description": "CW: one step red of the single soliton the shelf is over.",
+      "source": "verify_P6500_D+6.90_shelf69.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 22.873351157900952,
+        "drop_phi_contrast": 1.0000000000000027,
+        "boundary_env_contrast": 0.005773159728050814
+      }
+    }
+  }
+}
