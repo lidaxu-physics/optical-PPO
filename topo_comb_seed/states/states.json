@@ -69,6 +69,19 @@
         "boundary_env_contrast": 1.5267292663690324
       }
     },
+    "minicomb_P3500_D1.40": {
+      "F0_squared": 3500,
+      "Delta_eff": 1.4,
+      "Delta_raw": 6.639602738094011,
+      "n_envelopes": 0,
+      "description": "Locked mini-comb candidate inside the dynamic zone: discrete equidistant fine lines in tooth mu=4 under a smooth envelope. Nesting NOT established.",
+      "source": "sweep_P3500_J80.npz:snap_+1.40[-1]",
+      "fingerprint": {
+        "lattice_power": 53.116605925220554,
+        "drop_phi_contrast": 4.078638835234502,
+        "boundary_env_contrast": 1.5530764560688812
+      }
+    },
     "cw_P3500_D4.80": {
       "F0_squared": 3500,
       "Delta_eff": 4.8,
@@ -191,7 +204,7 @@
       "Delta_eff": 6.6,
       "Delta_raw": 11.83960273809401,
       "n_envelopes": 1,
-      "description": "*** THE RESULT *** Single nested travelling edge soliton: ONE envelope localised in boundary-ring AND phi, circulating the 20-ring edge in ~61 lifetimes (chiral, one direction), rigid equidistant comb across all teeth. Verified 1100 lifetimes.",
+      "description": "*** THE RESULT *** Single nested travelling edge soliton: ONE envelope localised in boundary-ring AND phi, circulating the 20-ring edge once every 0.56 lifetimes (35.7 rings/lt, chiral, one direction), rigid equidistant comb across all teeth. Verified 1100 lifetimes.",
       "source": "verify_P6500_D+6.60_long.npz:trace[-1]",
       "fingerprint": {
         "lattice_power": 23.727280710213332,

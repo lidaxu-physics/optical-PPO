@@ -1,60 +1,67 @@
-# State catalogue — zigzag 6×6 (runs/ is organised per pump power: runs/P3500, P8000, P20000 (P = pump power F0^2)), J = 80, φ = π/4, d₂ = 0.0125, κ_ex = 1 (units κ/2 = 1)
+# State catalogue — zigzag 6×6 topological lattice
 
-Every distinct state this system has shown us. One row per state: where it lives, how to
-recognise it, and the exact seed that re-prepares it. Keep this current — any new state from
-any run gets a row, interesting or embarrassing.
+J = 80, φ = π/4, spin +1, d₂ = 0.0125, κ_ex = 1, N = 64 longitudinal modes, R = 60 rings,
+pump ring 0, drop ring 55, pumped edge supermode σ = 29 (λ = −12.66). Units κ_in = κ/2 = 1,
+time in lifetimes 2/κ; Δ = (2/κ)(ω_res − ω_p), so **Δ > 0 is red-detuned** (the opposite sign
+convention to the Topological Photonics Explorer, where δ = −Δ).
 
-| # | state | parameters (F₀², Δ_eff) | signature | seed / preparation | status |
+Three pump powers are kept: **500** (below threshold, linear reference), **3500** (the
+stationary k = 0 soliton family) and **6500** (the staircase down to the single nested
+travelling soliton). Every state below is in `states/states.npz` under the name in the first
+column — load it with `states/load.py`, no raw run data needed.
+
+| archive name | F₀² | Δ_eff | signature | how it was prepared | status |
 |---|---|---|---|---|---|
-| 1 | **CW** (flat lower branch) | any F₀², red of resonance | φ-uniform; lattice P = 12.65 @3500/4.8; single fine line | cold start (noise) anywhere red | verified |
-| 2 | **MI chaotic comb** | F₀² ≳ 1500; Δ_eff ≈ 1–4 @3500 | hold-end jitter; filled fine spectra; speckled spatiotemporal | sweep snapshot `P3500/sweep_P3500_J80.npz:snap_+3.10` | verified (dynamics); λ_max not yet measured here |
-| 3 | **Locked mini-comb** (equidistant fine lines, smooth envelope; possibly nested Turing — nesting NOT established) | 3500, Δ_eff ≈ +1.4 (also seen at 2000, +1.4, first round) | discrete equidistant fine lines in tooth μ=4 with smooth envelope; state within the "dynamic" zone | `P3500/sweep_P3500_J80.npz:snap_+1.40` | **candidate — needs stop-and-hold + ladder-vs-rigid-grid check** |
-| 4 | **Edge-uniform Turing-3** (3 pulses/ring, k = 0 along boundary) | 3500, Δ_eff ∈ [≈4.2, 5.20]; dies 5.25 | stationary (machine precision); 3 equidistant φ-pulses, all edge rings in phase; single fine line | `P3500/verify_P3500_D+4.80_warm.npz:trace` (warm only — cold start falls to #1) | verified 500 lt |
-| 5 | **Edge-uniform Turing-8** | 2000, Δ_eff ∈ [3.15, 3.30] | as #4 with 8 pulses, contrast 4.5 | first-round data deleted; re-prepare: sweep at 2000, snap +3.10, warm verify | verified (first round), seed to regenerate |
-| 6 | **Two-soliton state** | 3500, 4.9 | 2 pulses; P = 19.80 = CW + 2×3.6 | `P3500/surgery_keep2.npz:a` | verified 500 lt |
-| 7 | **Single stationary edge soliton** (HERO; **NOT nested** — uniform along the boundary, k = 0) | 3500, 4.9 | 1 sech pulse/ring, edge-rigid; P = 16.12; drift 1e-15; peak/bg ≈ 16 | `P3500/surgery_keep1.npz:a` (surgery on #4) | verified 800+ lt; portraits + animation |
-| 8 | power-quantisation family #1/4/6/7 | 3500, 4.9 | P = 12.65 + 3.6 × n_pulses, n = 0..3, co-existing | — | verified |
+| `linear_P500_D1.00` | 500 | 1.00 | φ-uniform, hold mean = hold end everywhere, dispersion map is the pure noise floor; the tilted resonance peaks at Δ ≈ 0.7 | cold sweep | verified (below threshold; the comb threshold lies between F₀² = 1000 and 1500) |
+| `minicomb_P3500_D1.40` | 3500 | 1.40 | discrete equidistant fine lines in tooth μ = 4 under a smooth envelope, inside the dynamic zone | cold sweep | **candidate** — nesting not established; needs stop-and-hold + ladder-vs-rigid-grid check |
+| `chaos_P3500_D3.10` | 3500 | 3.10 | hold-end jitter, filled fine spectra, speckled spatiotemporal map | cold sweep | verified (dynamics) |
+| `cw_P3500_D4.80` | 3500 | 4.80 | φ-uniform, lattice power 12.65, single fine line | cold start at this detuning | verified |
+| `turing3_P3500_D4.80` | 3500 | 4.80 | 3 equidistant φ-pulses, every boundary ring in phase (k = 0); stationary to machine precision; power 23.51 | warm start — a cold start at the same point falls to CW instead (**multistability**) | verified 500 lt |
+| `soliton2_P3500_D4.90` | 3500 | 4.90 | 2 pulses per ring, power 19.80 | pulse surgery on turing3 (`surgery.py 2`) | verified 500 lt |
+| `soliton1_P3500_D4.90` | 3500 | 4.90 | **1 sech pulse per boundary ring**, edge-rigid (k = 0, **not nested**); power 16.12, peak/background ≈ 16, drift 1e-15 | pulse surgery on turing3 (`surgery.py 1`) | verified 800+ lt; portrait + formation movie |
+| `chaos_P6500_D1.00` | 6500 | 1.00 | power wanders, spectra filled — chaos already owns the blue side at this pump | cold sweep | verified 300 lt |
+| `chaos_P6500_D4.50` | 6500 | 4.50 | developed chaos, just before the collapse at 5.2 | cold sweep | verified 150 lt |
+| `gas_P6500_D5.50` | 6500 | 5.50 | ~10 pulses scattered over the boundary × φ plane; **metastable** — evaporated one envelope at t ≈ 250 lt (power 32 → 30.2) | cold sweep onto the post-collapse shelf | verified 300 lt |
+| `gas_P6500_D5.90` | 6500 | 5.90 | ~9 pulses, disordered, localised in both ring and φ; dense fine comb | cold sweep | verified 300 lt |
+| `crystal_P6500_D6.30` | 6500 | 6.30 | ~5 pulses, sparse and 2D-localised; clean periodic power sawtooth; rigid equidistant fine comb across all μ | cold sweep | verified 300 lt |
+| **`nested_soliton_P6500_D6.60`** | 6500 | 6.60 | **ONE 2D-localised envelope** — ~3 boundary rings wide, a single φ-pulse inside each, contrast 15 — **circulating the 20-ring edge once every 0.560 lifetimes** (35.7 rings/lt, one chirality, zero φ-drift); rigid equidistant comb across all μ; one drop-port pass per lap | cold sweep, no surgery | **verified 1100 lt** |
+| `cw_P6500_D6.90` | 6500 | 6.90 | φ-uniform, the shelf is over | cold sweep | verified 300 lt |
 
-| 9 | **Travelling nested comb** (locked envelope train, ~5-6 envelopes circulating the boundary) | 8000, Δ_eff ∈ ≈[6, 8]; verified at 7.0 | lattice power ~flat, DROP power oscillates periodically (circulation ~0.9 lt); staggered blobs along the unrolled boundary (k ≠ 0); rigid equidistant fine comb (spacing ≈ 7) across ALL μ — straight vertical lines leaving the cold guides | `P8000/sweep_P8000_J80.npz:snap_+7.00` → `P8000/verify_P8000_D+7.00_nested.npz` | **verified 300 lt** |
-| 10 | second rising branch | 8000, Δ_eff ∈ [8, 12+] | power climbs again with moderate jitter; μ=4 at +9.00 shows few clean lines | `P8000/sweep_P8000_J80.npz:snap_+9.00` | candidate, unexplored |
-| 11 | deep chaos sea | 20000, everywhere in [−3, 25] | end-jitter everywhere, filled maps, no locked window | `P20000/sweep_P20000_J80.npz` snaps | verified (negative result) |
-| 12 | **Two-envelope travelling state** (the clean minimum of the train family) | 8000, Δ_eff ∈ [7.8, ≈8.05] (50-lt holds; dies 8.06) | 2 envelopes, boundary contrast 23–30; drop oscillates; **keep-1 surgery REGROWS the partner → 2 is the attractor** | `P8000/trainwalk.npz:state_+7.90`, `P8000/microwalk.npz:state_+8.02` | verified |
-| 13 | **Edge soliton gas** (~9 pulses, 2D-localised, staggered in ring AND φ) | 6500, Δ_eff ≈ 5.9 (shelf Δ∈[5.6, 6.9] after fine-sweep collapse) | power 29.4 with small regular oscillation; discrete bright spots scattered over the unrolled-boundary × φ plane; dense fine comb | `P6500/sweep_P6500_J80_fine.npz:snap_+5.90` → `P6500/verify_P6500_D+5.90_shelf59.npz` | verified 300 lt; at Δ=5.5 the denser gas (~11) is metastable — evaporated one envelope at t≈250 lt (32→30.2) |
-| 14 | **Nested soliton crystal / few-envelope state** (~5 pulses, 2D-localised) | 6500, Δ_eff ≈ 6.3 | power 25.55 with CLEAN periodic sawtooth (~15 lt); sparse 2D-localised pulses; **rigid equidistant fine comb across ALL μ (nested signature)** | `P6500/sweep_P6500_J80_fine.npz:snap_+6.30` → `P6500/verify_P6500_D+6.30_shelf63.npz` | verified 300 lt |
-| 15 | **SINGLE NESTED TRAVELLING EDGE SOLITON** (THE TARGET: one envelope, localised in boundary-ring AND φ, circulating the edge) | 6500, Δ_eff = 6.60 (last step before CW at 6.9; shelf staircase 9→5→1→0) | ONE 2D-localised envelope (~3 rings wide, single φ-pulse, contrast 15); circulates the 20-ring boundary in ~61 lt (0.33 rings/lt, one chirality, φ-drift 0); power 23.4 with clean periodic oscillation (one drop-port pass per lap); rigid equidistant fine comb across ALL μ; clean discrete μ=4 comb with smooth envelope | `P6500/sweep_P6500_J80_fine.npz:snap_+6.60` → `P6500/verify_P6500_D+6.60_shelf66.npz:trace` | **verified 300 lt; COLD-SWEEP ACCESSIBLE** |
+Power quantisation at 3500, Δ ≈ 4.9: 12.65 (CW) + 3.6 per pulse → 16.12, 19.80, 23.51. All
+four members co-exist at the same parameters; which one you get depends entirely on history.
 
-## Wanted (not yet found)
+## The two staircases
 
-| state | expected signature | hunt plan |
-|---|---|---|
-| ~~**SINGLE travelling nested soliton**~~ | **FOUND — state #15** (P6500, Δ 6.60, via the fine-sweep staircase; no surgery needed, cold sweep lands on it) | twelve surgical routes failed at P8000 before the fine 6500 sweep handed it over: | hard carve at 7.0/7.6 (collapse), carve from pair at 7.9 (partner regrows), adiabatic walks (die 8.06, no 2→1), heal+restore (→3), power-walk down (dies 7400), σ=34 end-pumping (no locked branch), intermediate pumps P5000/P6500 (no travelling branch at all — post-collapse is pure CW; the "X" structure in the P6500 +7.50 map is a row-norm transient artifact, verified CW), red-edge carves at 8.05/8.10 (collapse to CW — branch end, not pair interaction), diagonal walk of the P3500 hero (k=0 single-pulse branch terminates ≈P4700, Δ5.6, via a growing breather; cannot reach 8000). In flight: chiral phase-kick carves (select one travelling direction). Next knobs: larger lattice; different pump supermode |
-| **Nested / boundary-periodic Turing** (pattern along the edge) | few ladder lines lit and locked; k ≠ 0 structure along unrolled boundary | same sweeps, blue-zone snapshots |
-| breathers (if any) | periodic hold-end oscillation at fixed detuning, single frequency in ESA | flag any zone where end-vs-mean oscillates regularly, not chaotically |
+**F₀² = 3500** — a cold ramp ignites chaos (Δ ≈ 0.2–3.6), chaos collapses in discrete steps
+(3.6–4.3) onto a long locked shelf at power ≈ 27.5 (Δ ∈ [4.3, 5.2]), which dies straight to CW
+at 5.2 **with no further sub-steps**. The shelf carries Turing-3; the 2- and 1-pulse members
+of the family are reachable only by surgery or a warm start, never by the cold sweep itself.
 
-Caveat log: #3 was spotted in the first-round summaries (deleted data); the 3500 rerun
-regenerates its snapshot. "Nested" claims require the fine-spectrum ladder check — a locked
-mini-comb per ring is necessary but not sufficient.
+**F₀² = 6500** — chaos from Δ ≈ 0.2 to 5.2 (it owns the blue side too: there is **no Turing
+roll at this pump**), then the post-collapse shelf Δ ∈ [5.6, 6.9] resolves under a fine sweep
+(step 0.025) into a soliton staircase: **~9 envelopes (5.9) → ~5 (6.3) → 1 (6.6) → 0 (6.9)**.
+The last step before CW is the single nested travelling soliton, and the cold sweep lands on
+it by itself.
 
-DATA PURGE (2026-10-05 evening, user request): runs/ now keeps ONLY P500, P3500, P6500.
-Seeds referenced below under P2000/P8000/P20000 are deleted — regenerate via the quoted
-sweep settings if needed (states #5, #9–#12 and the P8000 surgery/walk chain).
+Why it was not found at higher pump: at F₀² = 8000 the same staircase bottoms out at **2**
+envelopes (a corner-pinned standing pair), and twelve surgical routes there all failed — hard
+carves collapse to CW, carving one of a pair regrows the partner, adiabatic walks in detuning
+or in pump die rather than shed an envelope, and a diagonal walk of the 3500 k = 0 soliton
+terminates near F₀² ≈ 4700. The minimum envelope count is a property of the pump power; only
+at 6500 is it 1.
 
-P6500 state census (verified): NO regular Turing roll at this pump — chaos already owns the
-blue side at Δ=1.0 (verify_P6500_D+1.00), chaos confirmed at 4.5, and the post-collapse shelf
-is a disordered soliton gas, not a periodic roll. Edge-uniform Turing rolls live at lower
-pump (#5 at P2000, #4 at P3500).
+## Measurement caveat worth remembering
 
-## Waterfall survey (2026-10-05, runs/pumpmode_waterfall.png + combpower_waterfall.png)
+The circulation period is **0.560 lt**, not the ~61 lt a stop-and-hold power plot suggests:
+that plot samples every 5 lt, far slower than the orbit, so its apparent slow beat is an
+aliasing artifact. Track the envelope centroid with ≥ 10 samples per lap (0.01 lt sampling
+gives 56) before quoting any travelling-state period — and use the same step for movie frames.
 
-Cold blue->red sweeps P = 500..8000 step 500, recording the pumped-supermode mu=0 tooth
-|b_{sigma_p,0}|^2 and comb power (total - pump tooth); per-F data in runs/P*/pumpmode_P*.npz.
-- Comb threshold refined: between P = 1000 (no comb anywhere) and 1500 (clean locked
-  rectangular comb window, Delta_eff 1.5-2.5).
-- Chaos collapse front marches red roughly linearly: ~1.5 at P1500 -> ~5.7 at P8000.
-- Red edge of the plateau shows discrete state-switching steps (P3000-4000); the P3500
-  shelf at 4-5.2 is the Turing-3/soliton family step.
-- The travelling-train branch (#9) appears in cold sweeps as a broad comb-power bump at
-  Delta 6-8, present at P7500/8000, nearly gone at P7000: cold-accessible birth at
-  P ~ 7000-7500 (independent confirmation of the power-walk death at 7400).
-- Every panel's far-red rising tail (even below threshold) is LINEAR excitation of the next
-  edge-supermode rung (mini-FSR ~10.6), not comb.
+## Still open
+
+- **Nested / boundary-periodic Turing** — a *regular* k ≠ 0 pattern along the edge, as opposed
+  to the disordered gas: not seen at 500/3500/6500. Edge-uniform rolls live at lower pump (an
+  8-pulse k = 0 roll was seen at F₀² = 2000, Δ ≈ 3.2, before that data was dropped).
+- **Breathers** — no zone found yet where the hold end oscillates regularly rather than
+  chaotically at fixed detuning.
+- `minicomb_P3500_D1.40` needs the ladder-vs-rigid-grid check to decide whether it is nested.

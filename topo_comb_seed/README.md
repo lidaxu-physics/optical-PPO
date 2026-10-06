@@ -11,6 +11,7 @@ keep computing — on any machine, with nothing but this repo.
 fingerprint to verify it loaded correctly.
 
 ```bash
+pip install -r requirements.txt        # torch, numpy, matplotlib
 python topo_comb_seed/states/load.py --list                     # the catalogue
 python topo_comb_seed/states/load.py --check                    # re-derive every fingerprint
 python topo_comb_seed/states/load.py nested_soliton_P6500_D6.60 --evolve 60 --plot portrait.png
@@ -31,6 +32,7 @@ norm="forward")`.
 | state | F₀² | Δ_eff | envelopes | what it is |
 |---|---|---|---|---|
 | `linear_P500_D1.00` | 500 | 1.00 | 0 | below threshold — linear reference |
+| `minicomb_P3500_D1.40` | 3500 | 1.40 | — | locked mini-comb candidate (nesting unproven) |
 | `chaos_P3500_D3.10` | 3500 | 3.10 | — | developed MI chaos |
 | `cw_P3500_D4.80` | 3500 | 4.80 | 0 | CW branch (cold start) |
 | `turing3_P3500_D4.80` | 3500 | 4.80 | 3 | edge-uniform Turing-3, k = 0 |
@@ -54,15 +56,15 @@ pumped edge supermode σ = 29 (λ = −12.66). Units κ_in = κ/2 = 1, time in l
   `build_states.py` (provenance: which raw run each frame came from).
 - `STATES.md` — the full catalogue: every state, its signature, its seed, how it was verified,
   plus the negative results (which hunts failed and why).
-- `figures/` — every figure and movie, one folder per pump power, plus the two waterfalls.
+- `figures/` — every figure and movie, one folder per pump power (`P500`, `P3500`, `P6500`).
 - Sweep & analysis tools: `sweep.py` (detuning ramp), `pumpsweep.py` (pump-mode/comb power),
-  `verify.py` (stop-and-hold), `summary.py`, `stairplot.py`, `waterfall.py`, `nested_mu.py`,
-  `nested2d.py`, `threshold.py`.
-- State-preparation tools: `surgery.py` (carve pulses in φ), `boundary_surgery.py` (carve
-  along the edge, optional chiral phase kick), `redwalk.py` / `powerwalk.py` / `diagwalk.py` /
-  `trainwalk.py` (adiabatic continuation in detuning, pump, or both).
-- Figures & movies: `animate_state.py` (2D portrait + circulation movie of any saved state),
-  `portrait2d.py` (formation movie of the stationary soliton).
+  `verify.py` (stop-and-hold), `summary.py`, `stairplot.py`, `waterfall.py` (stack several
+  pump powers), `nested_mu.py`, `nested2d.py`, `threshold.py`.
+- State preparation: `surgery.py` (carve pulses in φ — this is what made the single stationary
+  soliton out of Turing-3), `redwalk.py` (adiabatic continuation in detuning).
+- Figures & movies: `animate_state.py` (2D portrait + circulation movie of any saved state,
+  and it runs straight off `states/states.npz`), `portrait2d.py` (formation movie of the
+  stationary soliton).
 
 The raw sweep data (~10 GB of `runs/`) is deliberately **not** in the repo — the state frames
 above are the part worth carrying, and every figure can be rebuilt from them.
@@ -71,7 +73,7 @@ above are the part worth carrying, and every figure can be rebuilt from them.
 
 zigzag 6×6, J = 80, **F₀² = 6500, Δ_eff = +6.60** (STATES.md #15). ONE envelope localised in
 *both* directions — ~3 boundary rings wide along the edge, a single sharp φ-pulse inside each —
-circulating the 20-ring boundary in ~61 lifetimes (0.33 rings/lt, one chirality, zero φ-drift),
+circulating the 20-ring boundary once every 0.55 lifetimes (36 rings/lt, one chirality, zero φ-drift),
 passing the drop port once per lap (clean periodic drop-power sawtooth). Fine spectrum: rigid
 equidistant comb across ALL teeth μ — the nested 2D-comb signature. Verified 1100 lifetimes
 (300 + 800), amplitude constant. **Cold-sweep accessible, no surgery needed**: seed

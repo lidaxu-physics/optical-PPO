@@ -2,7 +2,7 @@
 small portable archive: states.npz (one (R, N) complex frame each) + states.json (parameters
 and verification fingerprints).
 
-Provenance only — it needs the ~10 GB `topo_comb_seed/runs/` tree of the hunt worktree, which is NOT
+Provenance only — it needs the ~10 GB `soliton/runs/` tree of the hunt worktree, which is NOT
 in the repo. Run it from the hunt worktree root:
 
     python topo_comb_seed/states/build_states.py <out_dir>
@@ -33,36 +33,39 @@ ORDER = BND[np.argsort(np.arctan2(xy[BND, 1] - xy[:, 1].mean(), xy[BND, 0] - xy[
 # --- catalogue: name -> (source npz, key, F0^2, Delta_eff, n_envelopes, blurb) ----------
 SPEC = [
     # P = 500 — below threshold, linear reference
-    ("linear_P500_D1.00", "topo_comb_seed/runs/P500/sweep_P500_J80_fine.npz", "snap_+1.00", 500, 1.00, 0,
+    ("linear_P500_D1.00", "soliton/runs/P500/sweep_P500_J80_fine.npz", "snap_+1.00", 500, 1.00, 0,
      "Below threshold: linear tilted resonance, no comb. Reference state."),
     # P = 3500 — Turing-3 shelf and the stationary k=0 soliton family
-    ("chaos_P3500_D3.10", "topo_comb_seed/runs/P3500/sweep_P3500_J80.npz", "snap_+3.10", 3500, 3.10, 0,
+    ("chaos_P3500_D3.10", "soliton/runs/P3500/sweep_P3500_J80.npz", "snap_+3.10", 3500, 3.10, 0,
      "Developed MI chaos: power wanders, fine spectra filled."),
-    ("cw_P3500_D4.80", "topo_comb_seed/runs/P3500/verify_P3500_D+4.80.npz", "trace", 3500, 4.80, 0,
+    ("minicomb_P3500_D1.40", "soliton/runs/P3500/sweep_P3500_J80.npz", "snap_+1.40", 3500, 1.40, 0,
+     "Locked mini-comb candidate inside the dynamic zone: discrete equidistant fine lines in "
+     "tooth mu=4 under a smooth envelope. Nesting NOT established."),
+    ("cw_P3500_D4.80", "soliton/runs/P3500/verify_P3500_D+4.80.npz", "trace", 3500, 4.80, 0,
      "CW lower branch at the same point as turing3_P3500_D4.80 (cold start) — multistability."),
-    ("turing3_P3500_D4.80", "topo_comb_seed/runs/P3500/verify_P3500_D+4.80_warm.npz", "trace", 3500, 4.80, 3,
+    ("turing3_P3500_D4.80", "soliton/runs/P3500/verify_P3500_D+4.80_warm.npz", "trace", 3500, 4.80, 3,
      "Edge-uniform Turing-3: 3 equidistant phi-pulses, every boundary ring in phase (k=0)."),
-    ("soliton2_P3500_D4.90", "topo_comb_seed/runs/P3500/surgery_keep2.npz", "a", 3500, 4.90, 2,
+    ("soliton2_P3500_D4.90", "soliton/runs/P3500/surgery_keep2.npz", "a", 3500, 4.90, 2,
      "Two stationary pulses per ring; power = CW + 2 x 3.6 (quantisation family)."),
-    ("soliton1_P3500_D4.90", "topo_comb_seed/runs/P3500/surgery_keep1.npz", "a", 3500, 4.90, 1,
+    ("soliton1_P3500_D4.90", "soliton/runs/P3500/surgery_keep1.npz", "a", 3500, 4.90, 1,
      "HERO-1: single stationary soliton per boundary ring, k=0 along the edge (NOT nested). "
      "Prepared by pulse surgery on turing3; drift 1e-15 over 800 lifetimes."),
     # P = 6500 — the soliton staircase down to the single nested travelling soliton
-    ("chaos_P6500_D1.00", "topo_comb_seed/runs/P6500/verify_P6500_D+1.00_blue10.npz", "trace", 6500, 1.00, 0,
+    ("chaos_P6500_D1.00", "soliton/runs/P6500/verify_P6500_D+1.00_blue10.npz", "trace", 6500, 1.00, 0,
      "Chaos already owns the blue side at this pump (no Turing window here)."),
-    ("chaos_P6500_D4.50", "topo_comb_seed/runs/P6500/verify_P6500_D+4.50_chaos45.npz", "trace", 6500, 4.50, 0,
+    ("chaos_P6500_D4.50", "soliton/runs/P6500/verify_P6500_D+4.50_chaos45.npz", "trace", 6500, 4.50, 0,
      "Developed chaos just before the collapse at 5.2."),
-    ("gas_P6500_D5.50", "topo_comb_seed/runs/P6500/verify_P6500_D+5.50_shelf55.npz", "trace", 6500, 5.50, 10,
+    ("gas_P6500_D5.50", "soliton/runs/P6500/verify_P6500_D+5.50_shelf55.npz", "trace", 6500, 5.50, 10,
      "Dense edge soliton gas, metastable: evaporated one envelope at t ~ 250 lifetimes."),
-    ("gas_P6500_D5.90", "topo_comb_seed/runs/P6500/verify_P6500_D+5.90_shelf59.npz", "trace", 6500, 5.90, 9,
+    ("gas_P6500_D5.90", "soliton/runs/P6500/verify_P6500_D+5.90_shelf59.npz", "trace", 6500, 5.90, 9,
      "Edge soliton gas: ~9 pulses localised in both ring and phi, disordered."),
-    ("crystal_P6500_D6.30", "topo_comb_seed/runs/P6500/verify_P6500_D+6.30_shelf63.npz", "trace", 6500, 6.30, 5,
+    ("crystal_P6500_D6.30", "soliton/runs/P6500/verify_P6500_D+6.30_shelf63.npz", "trace", 6500, 6.30, 5,
      "Nested soliton crystal: ~5 pulses, clean periodic sawtooth in the power, rigid 2D comb."),
-    ("nested_soliton_P6500_D6.60", "topo_comb_seed/runs/P6500/verify_P6500_D+6.60_long.npz", "trace", 6500, 6.60, 1,
+    ("nested_soliton_P6500_D6.60", "soliton/runs/P6500/verify_P6500_D+6.60_long.npz", "trace", 6500, 6.60, 1,
      "*** THE RESULT *** Single nested travelling edge soliton: ONE envelope localised in "
-     "boundary-ring AND phi, circulating the 20-ring edge in ~61 lifetimes (chiral, one "
+     "boundary-ring AND phi, circulating the 20-ring edge once every 0.56 lifetimes (35.7 rings/lt, chiral, one "
      "direction), rigid equidistant comb across all teeth. Verified 1100 lifetimes."),
-    ("cw_P6500_D6.90", "topo_comb_seed/runs/P6500/verify_P6500_D+6.90_shelf69.npz", "trace", 6500, 6.90, 0,
+    ("cw_P6500_D6.90", "soliton/runs/P6500/verify_P6500_D+6.90_shelf69.npz", "trace", 6500, 6.90, 0,
      "CW: one step red of the single soliton the shelf is over."),
 ]
 
