@@ -100,7 +100,7 @@
       "Delta_eff": 4.8,
       "Delta_raw": 10.039602738094011,
       "n_envelopes": 3,
-      "description": "Edge-uniform Turing-3: 3 equidistant phi-pulses, every boundary ring in phase (k=0).",
+      "description": "Three-soliton crystal (archive name turing3 is a misnomer): 3 bound phi-pulses at 0, 112 and 315 degrees, not equidistant, soliton-type spectrum; every boundary ring in phase (k=0).",
       "source": "verify_P3500_D+4.80_warm.npz:trace[-1]",
       "fingerprint": {
         "lattice_power": 23.511408777231612,

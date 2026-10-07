@@ -35,7 +35,7 @@ norm="forward")`.
 | `minicomb_P3500_D1.40` | 3500 | 1.40 | — | locked mini-comb candidate (nesting unproven) |
 | `chaos_P3500_D3.10` | 3500 | 3.10 | — | developed MI chaos |
 | `cw_P3500_D4.80` | 3500 | 4.80 | 0 | CW branch (cold start) |
-| `turing3_P3500_D4.80` | 3500 | 4.80 | 3 | edge-uniform Turing-3, k = 0 |
+| `turing3_P3500_D4.80` | 3500 | 4.80 | 3 | three-soliton crystal (bound, not equidistant), k = 0 |
 | `soliton2_P3500_D4.90` | 3500 | 4.90 | 2 | two stationary pulses |
 | `soliton1_P3500_D4.90` | 3500 | 4.90 | 1 | **single stationary soliton** (k = 0, not nested) |
 | `chaos_P6500_D1.00` | 6500 | 1.00 | — | chaos owns the blue side at this pump |
@@ -95,7 +95,7 @@ co-rotating with the pump). **Power quantisation:** CW 12.65 → 1 pulse 16.12 �
 alive for Δ_eff ∈ [≈4.2, 5.20], dies to CW at 5.25).
 
 Preparation path (all reproducible from `runs/`): blue→red ramp ignites MI chaos
-(`sweep.py`, F₀² = 3500) → chaos collapses onto the locked Turing-3 branch at Δ_eff ≈ 4.1
+(`sweep.py`, F₀² = 3500) → chaos collapses onto the locked three-soliton branch ("Turing-3" in the file names; the pulses are not equidistant) at Δ_eff ≈ 4.1
 (history-dependent: a cold start falls to CW — `verify.py` cold vs `--init` warm) → red
 walk confirms the branch and its end (`redwalk.py`) → **pulse surgery** (`surgery.py`:
 mask 2 of 3 pulses, keep the per-ring CW background) → relaxation locks the single pulse.

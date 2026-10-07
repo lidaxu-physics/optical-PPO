@@ -12,7 +12,7 @@ were rendered straight from those frames with `../animate_state.py`.
 | 2 | **static edge soliton** — one pulse per boundary ring, k = 0 along the edge | 3500 | 4.90 | `soliton1_P3500_D4.90` | `2_static_soliton.mp4` |
 | 3 | **nested travelling edge soliton** — one envelope localised in φ and along the edge, circulating | 6500 | 6.60 | `nested_soliton_P6500_D6.60` | `3_nested_soliton.mp4` |
 | 4 | **chaotic comb** — developed modulational instability | 6500 | 4.50 | `chaos_P6500_D4.50` | `4_chaotic_comb.mp4` |
-| 5 | **Turing roll** — three pulses per boundary ring, k = 0, stationary | 3500 | 4.80 | `turing3_P3500_D4.80` | `5_turing_roll.mp4` |
+| 5 | **soliton crystal** — three bound pulses per boundary ring, k = 0, stationary | 3500 | 4.80 | `turing3_P3500_D4.80` | `5_soliton_crystal.mp4` |
 
 Every movie shows the 60 rings on the zigzag geometry; the colour along each ring is the power
 |ψ_r(φ)|² inside it (black = none, white = most), the input ring is outlined blue, the drop ring
@@ -62,17 +62,19 @@ lattice power (100, the highest of the four) wandering in time, the fine spectra
 pump chaos owns the whole blue side (Δ_eff from 0.2 to 5.2): there is no Turing window. Two more
 chaotic states are in the archive (`chaos_P3500_D3.10`, `chaos_P6500_D1.00`).
 
-## 5. Turing roll (F₀² = 3500, Δ_eff = 4.80) — `5_turing_roll.mp4`, 0.5 lifetimes per frame
+## 5. Soliton crystal (F₀² = 3500, Δ_eff = 4.80) — `5_soliton_crystal.mp4`, 0.5 lifetimes per frame
 
-Three equidistant pulses in φ in every boundary ring, at the same three positions in every ring
-(k = 0 along the edge, like the static soliton), stationary to machine precision: nothing moves
-between frames. This is the locked pattern that the chaos of a blue→red sweep collapses onto at
+Three pulses in φ in every boundary ring, at the same three positions in every ring (k = 0 along
+the edge, like the static soliton), stationary to machine precision: nothing moves between frames.
+The archive calls it "Turing-3", but it is not a Turing roll: the pulses are not equidistant —
+they sit at φ/2π = 0, 0.31, 0.88, gaps of 112°, 202° and 45° — their spectrum is the broad sech-like
+envelope of a soliton (strongest teeth μ = ±7, ±9; 68 % of the comb beyond |μ| = 6, nothing special
+at μ = ±3), and the lattice power is additive, 3.6 per pulse (12.65 → 16.12 → 19.80 → 23.51). It is
+a bound state of three solitons, a soliton crystal. This is the locked pattern that the chaos of a blue→red sweep collapses onto at
 Δ_eff ≈ 4.1 and that survives to 5.2; the static soliton (2) and the two-pulse state were carved
 out of it by pulse surgery, and at this point it coexists with CW (a cold start lands on CW, power
 12.65, against 23.51 here — multistability). Its fine spectrum is a single line per longitudinal
-tooth, so like the static soliton it is a pattern in φ only, not along the edge: a *nested* Turing
-roll (a regular k ≠ 0 pattern along the boundary) was not found at these three pump powers
-(`../STATES.md`, "Still open").
+tooth, so like the static soliton it is a pattern in φ only, not along the edge.
 
 ## What each means for a feature map
 
@@ -84,9 +86,8 @@ roll (a regular k ≠ 0 pattern along the boundary) was not found at these three
   ε ≈ 0.02 before it broke.
 * **Nested soliton**: exactly periodic with the lap time 2π/δ, so the SAME nδ Fourier read-out
   applies, with a comb that the lattice generates itself. Untested with encoding tones.
-* **Turing roll**: stationary like the static soliton; the single ring's `rolls` regime needed
-  two-sided tones to keep the pattern from drifting and tolerated only weak ones (ε = 0.1).
-  Untested here.
+* **Soliton crystal**: stationary like the static soliton, three times its contrast in the
+  longitudinal comb. Untested with tones.
 * **Chaotic comb**: no periodicity; only a time average of the line powers can be read, and the
   inputs must survive the chaos noise. On the AQH 4 × 4 lattice (F₀² = 800) this regime did not
   learn the pendulum (−889, the level of a linear policy); these 6 × 6 states are pumped harder.

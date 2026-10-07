@@ -16,7 +16,7 @@ column — load it with `states/load.py`, no raw run data needed.
 | `minicomb_P3500_D1.40` | 3500 | 1.40 | discrete equidistant fine lines in tooth μ = 4 under a smooth envelope, inside the dynamic zone | cold sweep | **candidate** — nesting not established; needs stop-and-hold + ladder-vs-rigid-grid check |
 | `chaos_P3500_D3.10` | 3500 | 3.10 | hold-end jitter, filled fine spectra, speckled spatiotemporal map | cold sweep | verified (dynamics) |
 | `cw_P3500_D4.80` | 3500 | 4.80 | φ-uniform, lattice power 12.65, single fine line | cold start at this detuning | verified |
-| `turing3_P3500_D4.80` | 3500 | 4.80 | 3 equidistant φ-pulses, every boundary ring in phase (k = 0); stationary to machine precision; power 23.51 | warm start — a cold start at the same point falls to CW instead (**multistability**) | verified 500 lt |
+| `turing3_P3500_D4.80` | 3500 | 4.80 | 3 bound φ-pulses at 0°, 112° and 315° (NOT equidistant: a soliton crystal, not a Turing roll — soliton-type spectrum, power additive 3.6 per pulse), every boundary ring in phase (k = 0); stationary to machine precision; power 23.51 | warm start — a cold start at the same point falls to CW instead (**multistability**) | verified 500 lt |
 | `soliton2_P3500_D4.90` | 3500 | 4.90 | 2 pulses per ring, power 19.80 | pulse surgery on turing3 (`surgery.py 2`) | verified 500 lt |
 | `soliton1_P3500_D4.90` | 3500 | 4.90 | **1 sech pulse per boundary ring**, edge-rigid (k = 0, **not nested**); power 16.12, peak/background ≈ 16, drift 1e-15 | pulse surgery on turing3 (`surgery.py 1`) | verified 800+ lt; portrait + formation movie |
 | `chaos_P6500_D1.00` | 6500 | 1.00 | power wanders, spectra filled — chaos already owns the blue side at this pump | cold sweep | verified 300 lt |
@@ -34,7 +34,7 @@ four members co-exist at the same parameters; which one you get depends entirely
 
 **F₀² = 3500** — a cold ramp ignites chaos (Δ ≈ 0.2–3.6), chaos collapses in discrete steps
 (3.6–4.3) onto a long locked shelf at power ≈ 27.5 (Δ ∈ [4.3, 5.2]), which dies straight to CW
-at 5.2 **with no further sub-steps**. The shelf carries Turing-3; the 2- and 1-pulse members
+at 5.2 **with no further sub-steps**. The shelf carries the three-soliton crystal ("turing3" in the archive, a misnomer); the 2- and 1-pulse members
 of the family are reachable only by surgery or a warm start, never by the cold sweep itself.
 
 **F₀² = 6500** — chaos from Δ ≈ 0.2 to 5.2 (it owns the blue side too: there is **no Turing
