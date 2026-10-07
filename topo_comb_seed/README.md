@@ -7,7 +7,7 @@ keep computing — on any machine, with nothing but this repo.
 ## Using the states (start here)
 
 `states/states.npz` holds the field of every catalogued state (one `(R, N)` complex frame,
-0.8 MB for all 13); `states/states.json` holds the parameters that keep each one alive and a
+0.9 MB for all 15); `states/states.json` holds the parameters that keep each one alive and a
 fingerprint to verify it loaded correctly.
 
 ```bash
@@ -32,6 +32,7 @@ norm="forward")`.
 | state | F₀² | Δ_eff | envelopes | what it is |
 |---|---|---|---|---|
 | `linear_P500_D1.00` | 500 | 1.00 | 0 | below threshold — linear reference |
+| `turing14_P2500_D0.10` | 2500 | 0.10 | 14 | Turing roll at the instability onset, k = 0, stationary |
 | `minicomb_P3500_D1.40` | 3500 | 1.40 | — | locked mini-comb candidate (nesting unproven) |
 | `chaos_P3500_D3.10` | 3500 | 3.10 | — | developed MI chaos |
 | `cw_P3500_D4.80` | 3500 | 4.80 | 0 | CW branch (cold start) |

@@ -5,15 +5,16 @@ pump ring 0, drop ring 55, pumped edge supermode σ = 29 (λ = −5.24). Units �
 time in lifetimes 2/κ; Δ = (2/κ)(ω_res − ω_p), so **Δ > 0 is red-detuned** (the opposite sign
 convention to the Topological Photonics Explorer, where δ = −Δ).
 
-Three pump powers are kept: **500** (below threshold, linear reference), **3500** (the
-stationary k = 0 soliton family) and **6500** (the staircase down to the single nested
-travelling soliton). Every state below is in `states/states.npz` under the name in the first
+Four pump powers are kept: **500** (below threshold, linear reference), **2500** (the Turing roll
+at the instability onset), **3500** (the stationary k = 0 soliton family) and **6500** (the
+staircase down to the single nested travelling soliton). Every state below is in `states/states.npz` under the name in the first
 column — load it with `states/load.py`, no raw run data needed.
 
 | archive name | F₀² | Δ_eff | signature | how it was prepared | status |
 |---|---|---|---|---|---|
 | `linear_P500_D1.00` | 500 | 1.00 | φ-uniform, hold mean = hold end everywhere, dispersion map is the pure noise floor; the tilted resonance peaks at Δ ≈ 0.7 | cold sweep | verified (below threshold; the comb threshold lies between F₀² = 1000 and 1500) |
 | `minicomb_P3500_D1.40` | 3500 | 1.40 | discrete equidistant fine lines in tooth μ = 4 under a smooth envelope, inside the dynamic zone | cold sweep | **candidate** — nesting not established; needs stop-and-hold + ladder-vs-rigid-grid check |
+| `turing14_P2500_D0.10` | 2500 | 0.10 | **Turing roll**: 14 equidistant φ-pulses in every boundary ring, same positions in every ring (k = 0), 99 % of the comb on μ = ±14, ±28, contrast 2.4; stationary, no drift | cold start from noise, locked after ~250 lt | verified 400 lt |
 | `chaos_P3500_D3.10` | 3500 | 3.10 | hold-end jitter, filled fine spectra, speckled spatiotemporal map | cold sweep | verified (dynamics) |
 | `cw_P3500_D4.80` | 3500 | 4.80 | φ-uniform, lattice power 12.65, single fine line | cold start at this detuning | verified |
 | `turing3_P3500_D4.80` | 3500 | 4.80 | 3 bound φ-pulses at 0°, 112° and 315° (NOT equidistant: a soliton crystal, not a Turing roll — soliton-type spectrum, power additive 3.6 per pulse), every boundary ring in phase (k = 0); stationary to machine precision; power 23.51 | warm start — a cold start at the same point falls to CW instead (**multistability**) | verified 500 lt |
@@ -60,8 +61,9 @@ gives 56) before quoting any travelling-state period — and use the same step f
 ## Still open
 
 - **Nested / boundary-periodic Turing** — a *regular* k ≠ 0 pattern along the edge, as opposed
-  to the disordered gas: not seen at 500/3500/6500. Edge-uniform rolls live at lower pump (an
-  8-pulse k = 0 roll was seen at F₀² = 2000, Δ ≈ 3.2, before that data was dropped).
+  to the disordered gas: not seen at 500/3500/6500. Edge-uniform (k = 0) rolls live at lower pump
+  and near the instability onset: `turing14_P2500_D0.10` (14 pulses, stationary); 14–16-pulse rolls
+  also form at F₀² = 2000–3500, Δ_eff = 0.05–0.2, some of them slowly rotating in φ.
 - **Breathers** — no zone found yet where the hold end oscillates regularly rather than
   chaotically at fixed detuning.
 - `minicomb_P3500_D1.40` needs the ladder-vs-rigid-grid check to decide whether it is nested.

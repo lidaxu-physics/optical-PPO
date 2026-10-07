@@ -56,6 +56,19 @@
         "boundary_env_contrast": 0.003552713678800501
       }
     },
+    "turing14_P2500_D0.10": {
+      "F0_squared": 2500,
+      "Delta_eff": 0.1,
+      "Delta_raw": 5.339602738093959,
+      "n_envelopes": 14,
+      "description": "Turing roll at the modulational-instability onset: 14 equidistant phi-pulses in every boundary ring, the same positions in every ring (k=0), stationary (power drift 5e-7 over 20 lt, no drift in phi), 99% of the comb on the harmonics of 14 (mu = +-14, +-28). Cold start from noise, locked after ~250 lt.",
+      "source": "cold start from noise at these parameters, held 400 lt (scratch run roll_hold.py, 2026-10-07)",
+      "fingerprint": {
+        "lattice_power": 36.155804796309525,
+        "drop_phi_contrast": 2.38787754068017,
+        "boundary_env_contrast": 1.0611395824322045
+      }
+    },
     "chaos_P3500_D3.10": {
       "F0_squared": 3500,
       "Delta_eff": 3.1,
@@ -87,7 +100,7 @@
       "Delta_eff": 4.8,
       "Delta_raw": 10.039602738094011,
       "n_envelopes": 0,
-      "description": "CW lower branch at the same point as turing3_P3500_D4.80 (cold start) \u2014 multistability.",
+      "description": "CW lower branch at the same point as turing3_P3500_D4.80 (cold start) — multistability.",
       "source": "verify_P3500_D+4.80.npz:trace[-1]",
       "fingerprint": {
         "lattice_power": 12.651138245586832,
