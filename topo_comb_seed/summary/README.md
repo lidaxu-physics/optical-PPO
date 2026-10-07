@@ -1,8 +1,8 @@
-# Four states of the zigzag 6×6 topological lattice
+# Five states of the zigzag 6×6 topological lattice
 
 One lattice (zigzag AQH 6 × 6, R = 60 rings, J = 80, φ = π/4, d₂ = 0.0125, κ_ex = 1 on the input
 ring 0 and the drop ring 55, N = 64 longitudinal modes, pump alone on the edge supermode σ = 29),
-four kinds of nonlinear state as the pump power F₀² and the effective detuning Δ_eff of that
+five kinds of nonlinear state as the pump power F₀² and the effective detuning Δ_eff of that
 supermode are changed. Each is one entry of the archive `../states/states.npz`; the movies here
 were rendered straight from those frames with `../animate_state.py`.
 
@@ -12,6 +12,7 @@ were rendered straight from those frames with `../animate_state.py`.
 | 2 | **static edge soliton** — one pulse per boundary ring, k = 0 along the edge | 3500 | 4.90 | `soliton1_P3500_D4.90` | `2_static_soliton.mp4` |
 | 3 | **nested travelling edge soliton** — one envelope localised in φ and along the edge, circulating | 6500 | 6.60 | `nested_soliton_P6500_D6.60` | `3_nested_soliton.mp4` |
 | 4 | **chaotic comb** — developed modulational instability | 6500 | 4.50 | `chaos_P6500_D4.50` | `4_chaotic_comb.mp4` |
+| 5 | **Turing roll** — three pulses per boundary ring, k = 0, stationary | 3500 | 4.80 | `turing3_P3500_D4.80` | `5_turing_roll.mp4` |
 
 Every movie shows the 60 rings on the zigzag geometry; the colour along each ring is the power
 |ψ_r(φ)|² inside it (black = none, white = most), the input ring is outlined blue, the drop ring
@@ -61,6 +62,18 @@ lattice power (100, the highest of the four) wandering in time, the fine spectra
 pump chaos owns the whole blue side (Δ_eff from 0.2 to 5.2): there is no Turing window. Two more
 chaotic states are in the archive (`chaos_P3500_D3.10`, `chaos_P6500_D1.00`).
 
+## 5. Turing roll (F₀² = 3500, Δ_eff = 4.80) — `5_turing_roll.mp4`, 0.5 lifetimes per frame
+
+Three equidistant pulses in φ in every boundary ring, at the same three positions in every ring
+(k = 0 along the edge, like the static soliton), stationary to machine precision: nothing moves
+between frames. This is the locked pattern that the chaos of a blue→red sweep collapses onto at
+Δ_eff ≈ 4.1 and that survives to 5.2; the static soliton (2) and the two-pulse state were carved
+out of it by pulse surgery, and at this point it coexists with CW (a cold start lands on CW, power
+12.65, against 23.51 here — multistability). Its fine spectrum is a single line per longitudinal
+tooth, so like the static soliton it is a pattern in φ only, not along the edge: a *nested* Turing
+roll (a regular k ≠ 0 pattern along the boundary) was not found at these three pump powers
+(`../STATES.md`, "Still open").
+
 ## What each means for a feature map
 
 * **Below threshold**: periodic response under periodic drive — the fine lines nδ are read by a
@@ -71,6 +84,9 @@ chaotic states are in the archive (`chaos_P3500_D3.10`, `chaos_P6500_D1.00`).
   ε ≈ 0.02 before it broke.
 * **Nested soliton**: exactly periodic with the lap time 2π/δ, so the SAME nδ Fourier read-out
   applies, with a comb that the lattice generates itself. Untested with encoding tones.
+* **Turing roll**: stationary like the static soliton; the single ring's `rolls` regime needed
+  two-sided tones to keep the pattern from drifting and tolerated only weak ones (ε = 0.1).
+  Untested here.
 * **Chaotic comb**: no periodicity; only a time average of the line powers can be read, and the
   inputs must survive the chaos noise. On the AQH 4 × 4 lattice (F₀² = 800) this regime did not
   learn the pendulum (−889, the level of a linear policy); these 6 × 6 states are pumped harder.
