@@ -1,7 +1,7 @@
 # State catalogue — zigzag 6×6 topological lattice
 
-J = 80, φ = π/4, spin +1, d₂ = 0.0125, κ_ex = 1, N = 64 longitudinal modes, R = 60 rings,
-pump ring 0, drop ring 55, pumped edge supermode σ = 29 (λ = −12.66). Units κ_in = κ/2 = 1,
+J = 80, φ = π/4, spin −1 (the default of H_zigzag; the eigenvalues do not depend on it, the chirality does: ring 55 is downstream), d₂ = 0.0125, κ_ex = 1, N = 64 longitudinal modes, R = 60 rings,
+pump ring 0, drop ring 55, pumped edge supermode σ = 29 (λ = −5.24). Units κ_in = κ/2 = 1,
 time in lifetimes 2/κ; Δ = (2/κ)(ω_res − ω_p), so **Δ > 0 is red-detuned** (the opposite sign
 convention to the Topological Photonics Explorer, where δ = −Δ).
 

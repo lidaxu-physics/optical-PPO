@@ -46,9 +46,9 @@ norm="forward")`.
 | **`nested_soliton_P6500_D6.60`** | 6500 | 6.60 | **1** | **single nested travelling edge soliton** |
 | `cw_P6500_D6.90` | 6500 | 6.90 | 0 | CW, one step past the shelf |
 
-Lattice (identical for all): zigzag 6×6 AQH, R = 60 rings, J = 80, φ = π/4, spin +1,
+Lattice (identical for all): zigzag 6×6 AQH, R = 60 rings, J = 80, φ = π/4, spin −1 (the default of H_zigzag; the eigenvalues do not depend on it, the chirality does: ring 55 is downstream),
 d₂ = 0.0125, κ_ex = 1, N = 64 longitudinal modes, dt = 0.0025, pump ring 0, drop ring 55,
-pumped edge supermode σ = 29 (λ = −12.66). Units κ_in = κ/2 = 1, time in lifetimes 2/κ.
+pumped edge supermode σ = 29 (λ = −5.24). Units κ_in = κ/2 = 1, time in lifetimes 2/κ.
 
 ## What is in this folder
 

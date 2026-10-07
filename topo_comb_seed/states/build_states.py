@@ -101,7 +101,7 @@ np.savez_compressed(os.path.join(OUT, "states.npz"), **states)
 doc = {
     "lattice": {
         "model": "zigzag AQH (Haldane-type) coupled-ring lattice, LLE per ring",
-        "nx": NX, "ny": NY, "R": int(R), "J": J, "phi": PHI, "spin": "+1",
+        "nx": NX, "ny": NY, "R": int(R), "J": J, "phi": PHI, "spin": "-1",
         "d2": D2, "kex": KEX, "N_modes": N_MODES, "dt": DT,
         "pump_site": int(PUMP), "drop_site": int(DROP),
         "pump_supermode_sigma": int(SIGMA_P), "pump_supermode_lambda": float(LAM_P),
