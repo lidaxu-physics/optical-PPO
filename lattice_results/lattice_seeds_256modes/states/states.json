@@ -1,0 +1,112 @@
+{
+  "lattice": {
+    "model": "zigzag AQH (Haldane-type) coupled-ring lattice, LLE per ring",
+    "nx": 6,
+    "ny": 6,
+    "R": 60,
+    "J": 80.0,
+    "phi": 0.7853981633974483,
+    "spin": "-1",
+    "d2": 0.0125,
+    "kex": 1.0,
+    "N_modes": 256,
+    "dt": 0.0025,
+    "pump_site": 0,
+    "drop_site": 55,
+    "pump_supermode_sigma": 29,
+    "pump_supermode_lambda": -5.2396027380940104,
+    "pump_supermode_overlap": 0.04161824976538826,
+    "boundary_sites_ccw": [
+      16,
+      5,
+      0,
+      1,
+      2,
+      3,
+      4,
+      10,
+      21,
+      32,
+      43,
+      54,
+      59,
+      58,
+      57,
+      56,
+      55,
+      49,
+      38,
+      27
+    ],
+    "units": "kappa_in = kappa/2 = 1; time in 2/kappa (lifetimes); Delta = (2/kappa)(omega_res - omega_pump), Delta > 0 is RED (opposite sign to the Topological Photonics Explorer convention)",
+    "equation": "dA_r/dt = [-(1 + i Delta) - i d2 mu^2] A_r,mu - i sum_r' H_rr' A_r',mu - kappa_ex,r A_r,mu + i FT[|psi_r|^2 psi_r]_mu + F_r delta_mu,0",
+    "drive": "single CW tone on ring 0, F0 = sqrt(F0_squared), placed so that the pumped edge supermode sits at Delta_eff (solver Delta = Delta_eff - lambda_sigma)"
+  },
+  "states": {
+    "turing15_P2500_D0.10": {
+      "F0_squared": 2500,
+      "Delta_eff": 0.1,
+      "Delta_raw": 5.33960273809401,
+      "n_envelopes": 15,
+      "description": "Static Turing roll: 15 equidistant phi-pulses in every boundary ring (k = 0), no drift (0.001 roll periods per lt), 100% of the comb on the k = 15 harmonics; a weak, non-growing beat with the supermode two ladder rungs away (omega ~ 21, drop-peak pk-pk 3.5%). Cold start, locks after ~120 lt.",
+      "source": "verify_P2500_D+0.10_turing_cold.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 36.12158941358851,
+        "drop_phi_contrast": 2.084053738119599,
+        "boundary_env_contrast": 1.1571987696225985
+      }
+    },
+    "chaos_P3500_D3.00": {
+      "F0_squared": 3500,
+      "Delta_eff": 3.0,
+      "Delta_raw": 8.23960273809401,
+      "n_envelopes": 0,
+      "description": "Chaotic (MI) comb: lattice power wanders 53-55 without settling, speckled field, filled fine spectrum. Cold sweep.",
+      "source": "verify_P3500_D+3.00_chaos.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 54.31900941700988,
+        "drop_phi_contrast": 10.213303277067189,
+        "boundary_env_contrast": 1.6174883561209688
+      }
+    },
+    "metastable_k0_soliton_P3500_D4.10": {
+      "F0_squared": 3500,
+      "Delta_eff": 4.1,
+      "Delta_raw": 9.33960273809401,
+      "n_envelopes": 1,
+      "description": "METASTABLE, not an attractor: single phi-pulse per boundary ring, uniform along the edge (k = 0), peak 13.4. Upsampled from the 64-mode soliton1 and alive at t = 150 lt, but it decays to CW within the following 500 lt. No stable k = 0 soliton was found at 256 modes for P = 3500-5500, Delta_eff = 3.6-4.6 (lower pump/redder: decays to CW; higher pump or bluer: breaks into localised travelling envelopes).",
+      "source": "verify_P3500_D+4.10_upshift.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 18.666121562319788,
+        "drop_phi_contrast": 16.835675622061537,
+        "boundary_env_contrast": 1.1804946829745693
+      }
+    },
+    "nested_pair_P6500_D6.20": {
+      "F0_squared": 6500,
+      "Delta_eff": 6.2,
+      "Delta_raw": 11.43960273809401,
+      "n_envelopes": 2,
+      "description": "Two-envelope nested travelling state, cold-sweep accessible (the shelf Delta_eff 5.2-6.22 ends 2 -> 0 at 6.23, with no single-envelope step at 256 modes).",
+      "source": "verify_P6500_D+6.20_shelf.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 24.658780785750835,
+        "drop_phi_contrast": 13.129814095845173,
+        "boundary_env_contrast": 19.613904325701505
+      }
+    },
+    "nested_soliton_P6500_D5.60": {
+      "F0_squared": 6500,
+      "Delta_eff": 5.6,
+      "Delta_raw": 10.83960273809401,
+      "n_envelopes": 1,
+      "description": "*** Single nested travelling edge soliton ***: ONE envelope localised along the boundary and in phi, circulating the 20-ring edge every 0.575 lt (34.8 rings/lt, one chirality), rigid equidistant comb across all teeth. One envelope in every sample over 650+ lt. NOT cold-sweep accessible: seeded from the 64-mode state upsampled to 256 modes, which survives only blue-shifted (the 64-mode point Delta_eff = 6.60 decays to CW at 256 modes).",
+      "source": "verify_P6500_D+5.60_long.npz:trace[-1]",
+      "fingerprint": {
+        "lattice_power": 22.930062018724538,
+        "drop_phi_contrast": 1.1707351837525064,
+        "boundary_env_contrast": 45.76252116785359
+      }
+    }
+  }
+}
