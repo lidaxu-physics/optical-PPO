@@ -33,7 +33,7 @@ for de in des:
     if rows[-1][1] < 13:   # collapsed to CW
         print("collapsed to CW, stopping", flush=True); break
 rows = np.array(rows)
-np.savez_compressed(f"topo_comb_seed/runs/P{F2:g}/redwalk_P{F2:g}.npz", rows=rows, lam_p=lam_p, **states)
+np.savez_compressed(f"lattice_results/lattice_seeds/runs/P{F2:g}/redwalk_P{F2:g}.npz", rows=rows, lam_p=lam_p, **states)
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 axes[0].plot(rows[:,0], rows[:,1], color=ps.BLUE, lw=1.6)
 axes[0].set_xlabel("$\\Delta_{eff}$"); axes[0].set_ylabel("lattice power")
@@ -42,5 +42,5 @@ axes[1].set_xlabel("$\\Delta_{eff}$"); axes[1].set_ylabel("pulses per ring (drop
 axes[1].set_ylim(-0.3, max(rows[:,2])+0.8)
 fig.suptitle(f"Red walk from the locked state, $F_0^2$ = {F2:g}", x=0.02, ha="left", fontweight="semibold")
 fig.tight_layout(rect=(0,0,1,0.93))
-fig.savefig(f"topo_comb_seed/runs/P{F2:g}/redwalk_P{F2:g}.png", dpi=140)
-print("saved topo_comb_seed/runs/P%g/redwalk_P%g.png" % (F2, F2), flush=True)
+fig.savefig(f"lattice_results/lattice_seeds/runs/P{F2:g}/redwalk_P{F2:g}.png", dpi=140)
+print("saved lattice_results/lattice_seeds/runs/P%g/redwalk_P%g.png" % (F2, F2), flush=True)

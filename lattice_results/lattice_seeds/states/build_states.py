@@ -5,7 +5,7 @@ and verification fingerprints).
 Provenance only — it needs the ~10 GB `soliton/runs/` tree of the hunt worktree, which is NOT
 in the repo. Run it from the hunt worktree root:
 
-    python topo_comb_seed/states/build_states.py <out_dir>
+    python lattice_results/lattice_seeds/states/build_states.py <out_dir>
 
 Everyone else just uses `states.npz` via `load.py`; this file records exactly where each
 state came from.
@@ -17,7 +17,7 @@ import numpy as np
 sys.path.insert(0, ".")
 from microring import H_zigzag, boundary_sites, pump_supermode, zigzag_sites
 
-OUT = sys.argv[1] if len(sys.argv) > 1 else "topo_comb_seed/states"
+OUT = sys.argv[1] if len(sys.argv) > 1 else "lattice_results/lattice_seeds/states"
 
 # --- the lattice these states live on (identical for every entry) -----------------------
 NX = NY = 6

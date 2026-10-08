@@ -1,8 +1,8 @@
 """
 Detuning-ramp engine for the nested-soliton hunt (see README.md in this folder).
 
-    python topo_comb_seed/sweep.py --F2 400                       # one coarse sweep, figure + dumps
-    python topo_comb_seed/sweep.py --F2 400 --J 80 --dt 0.0025    # the resolved-ladder variant
+    python lattice_results/lattice_seeds/sweep.py --F2 400                       # one coarse sweep, figure + dumps
+    python lattice_results/lattice_seeds/sweep.py --F2 400 --J 80 --dt 0.0025    # the resolved-ladder variant
 
 Pump only, on the central edge supermode of the zigzag lattice; Delta_eff of that supermode
 is ramped blue -> red in equal holds. Per hold: the mean and final total power (whole lattice
@@ -115,4 +115,4 @@ fig.suptitle(f"Detuning ramp, zigzag {args.nx}×{args.ny}, $F_0^2$ = {args.F2:g}
              f"(grey bands: dumped traces)", x=0.02, ha="left", fontweight="semibold")
 fig.tight_layout(rect=(0, 0, 1, 0.93))
 fig.savefig(os.path.join(OUT, name + ".png"))
-print(f"done in {time.time()-t0:.0f}s -> topo_comb_seed/runs/{name}.png / .npz", flush=True)
+print(f"done in {time.time()-t0:.0f}s -> lattice_results/lattice_seeds/runs/{name}.png / .npz", flush=True)

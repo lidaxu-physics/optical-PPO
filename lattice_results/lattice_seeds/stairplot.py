@@ -1,6 +1,6 @@
 """Staircase zoom of one pumpsweep npz: comb power vs detuning + drop-ring tooth heatmap.
 
-    python topo_comb_seed/stairplot.py topo_comb_seed/runs/P6500/pumpmode_P6500_fine.npz
+    python lattice_results/lattice_seeds/stairplot.py lattice_results/lattice_seeds/runs/P6500/pumpmode_P6500_fine.npz
 """
 import os, sys
 import numpy as np

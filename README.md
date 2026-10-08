@@ -136,7 +136,7 @@ that the state survives.
 ## Coupled rings: a mini-comb on topological edge supermodes
 
 *(Full details — model, validation, operating point, first results — in
-[LATTICE_EXTENSION.md](LATTICE_EXTENSION.md).)*
+[lattice_results/LATTICE_EXTENSION.md](lattice_results/LATTICE_EXTENSION.md).)*
 
 The single ring uses its longitudinal modes as channels, and those are one FSR apart: of the order
 of a THz, beyond what a modulator can write or a detector resolve directly. `--regime topo` replaces
@@ -163,7 +163,7 @@ ring −196…−252). Tasks with more inputs need more edge supermodes: the zig
 nearly equidistant ones at 6 × 6, and lands the LunarLander at +263 from nine features (linear
 policy +7…+106, best single ring +255…+263). One seed each.
 
-    python PPO_MR.py --env Pendulum-v1 --policy mr --regime topo --seed 0
+    python PPO_MR.py --env Pendulum-v1 --policy mr --regime topo --seed 0 --out_dir lattice_results/aqh_44_results
 
 ## PPO
 
@@ -209,12 +209,12 @@ python characterization/01_operating_point.py                # 02…04 likewise;
 |---|---|
 | `microring/lle_torch.py` | batched LLE solver: multi-tone drive, exact-flow Strang splitting, Newton continuation + Jacobian stability |
 | `microring/lattice.py` | coupled-ring lattices: `H_IQH` / `H_AQH` / `H_zigzag` Hamiltonians, `CoupledLLESolver` (per-mode matrix exponentials, tones with their own frequency) |
-| `animate_mini.py` | episode animation of a lattice (mini-comb) policy |
+| `lattice_results/` | everything lattice: `LATTICE_EXTENSION.md`, the state archive `lattice_seeds/` (zigzag 6 × 6 nonlinear states, movies), the lattice runs (`aqh_44_results/`, `aqh_66zigzag_results/`), `size_compare/`, `characterization/05…07`, `animate_mini.py` |
 | `microring/features.py` | `ChaoticRingFeatureMap` (persistent rings, time-averaged spectrum), `StaticRingFeatureMap` (stationary state), `LatticeFeatureMap` (mini-comb on the edge supermodes, fine lines of the drop port) |
 | `microring/__init__.py` | the regimes (`REGIMES`), per-task observation scaling (`TASKS`), `make_ring()` |
 | `microring/diagnostics.py` | Lyapunov exponent, split-half SNR, linear decodability, variance decomposition |
 | `PPO_MR.py` | PPO; `--policy mr, linear, poly2, nn`; `--regime chaos, normal, rolls, soliton, topo`; `--env`; `--resume` |
-| `characterization/01…05` | why this operating point, this tone strength, this averaging window; the ordered states; the mini-comb drive on the drop spectrum of the lattice |
+| `characterization/01…04` | why this operating point, this tone strength, this averaging window; the ordered states |
 | `tests/` | port vs the original JAX solver; steady-state, regime and symmetry checks |
 | `run_experiments.sh`, `summarize_results.py`, `compare_policies.py` | the exact published runs, the tables, the figures |
 

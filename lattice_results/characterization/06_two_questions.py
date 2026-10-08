@@ -1,7 +1,7 @@
 """
 The two questions of LATTICE_EXTENSION.md in one figure, from the result files of FINISHED runs.
 
-    python characterization/06_two_questions.py
+    python lattice_results/characterization/06_two_questions.py   (from the repository root)
 
 Row 1 -- do the lines of the driven edge supermodes suffice (Pendulum, AQH 4 x 4)?  Learning curves of the policy
 that reads the 4 `edge` lines and of the one that reads `all` 14; their 64 greedy evaluation episodes, sorted; and
@@ -16,14 +16,15 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+DIRS = {"Pendulum": "lattice_results/aqh_44_results", "LunarLander": "lattice_results/aqh_66zigzag_results/pattern_free"}     # lattice runs
 from microring import plot_style as ps
 
 ps.apply()
 
 
 def load(env, name):
-    path = f"results/ppo/{env}/{name}_seed0.json"
+    path = f"{DIRS[env]}/{name}_seed0.json"
     return json.load(open(path)) if os.path.exists(path) else None
 
 
@@ -90,7 +91,7 @@ if n_rows == 2:
 for x in ax.ravel():
     x.tick_params(labelsize=8)
 fig.tight_layout(rect=(0, 0, 1, 0.96 if n_rows == 2 else 0.92))
-out = "results/characterization/06_two_questions.png"
+out = "lattice_results/characterization/06_two_questions.png"
 os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out, dpi=130)
 print("saved", out, "| rows:", [name for name, there in rows if there])

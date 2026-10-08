@@ -12,7 +12,7 @@ de, F2, dt = 4.90, 3500.0, 0.0025
 H = H_zigzag(6, 6, J=80.0, phi=np.pi/4); R = len(H); pump, drop = 0, R-5
 bnd = boundary_sites(H)
 lam_p, _, _ = pump_supermode(H, pump, edge=bnd, edge_min=0.6)
-a0 = np.load("topo_comb_seed/runs/P3500/verify_P3500_D+4.80_warm.npz")["trace"][-1]      # (R, 64)
+a0 = np.load("lattice_results/lattice_seeds/runs/P3500/verify_P3500_D+4.80_warm.npz")["trace"][-1]      # (R, 64)
 psi = np.fft.ifft(a0, axis=-1, norm="forward")                               # (R, N) fields
 N = psi.shape[1]; phi = np.arange(N) * 2*np.pi/N
 prof = np.abs(psi[drop])**2
@@ -65,6 +65,6 @@ axes[2].plot(phi, prof_f, color=ps.BLUE, lw=1.4)
 axes[2].set_xlabel("$\\varphi$"); axes[2].set_ylabel("$|\\psi_{drop}(\\varphi)|^2$"); axes[2].set_title("drop-ring profile")
 fig.suptitle(f"Pulse surgery at $\\Delta_{{eff}}$ = {de}, $F_0^2$ = {F2:g}", x=0.02, ha="left", fontweight="semibold")
 fig.tight_layout(rect=(0,0,1,0.92))
-fig.savefig(f"topo_comb_seed/runs/P{F2:g}/surgery_keep{keep}.png", dpi=140)
-np.savez_compressed(f"topo_comb_seed/runs/P{F2:g}/surgery_keep{keep}.npz", a=a[0].numpy(), powers=powers, psi2=psi2)
-print(f"saved topo_comb_seed/runs/P{F2:g}/surgery_keep{keep}.png", flush=True)
+fig.savefig(f"lattice_results/lattice_seeds/runs/P{F2:g}/surgery_keep{keep}.png", dpi=140)
+np.savez_compressed(f"lattice_results/lattice_seeds/runs/P{F2:g}/surgery_keep{keep}.npz", a=a[0].numpy(), powers=powers, psi2=psi2)
+print(f"saved lattice_results/lattice_seeds/runs/P{F2:g}/surgery_keep{keep}.png", flush=True)

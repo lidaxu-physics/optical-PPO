@@ -1,7 +1,7 @@
 """
 The mini-comb drive on the drop spectrum of one longitudinal mode (the figures of LATTICE_EXTENSION.md).
 
-    python characterization/05_mini_comb_drive.py
+    python lattice_results/characterization/05_mini_comb_drive.py   (from the repository root)
 
 Linear drop spectrum of a lattice: the transmission from the input ring to the drop ring of a weak probe at frequency
 w from the pump, |[(1 + i (Delta - w)) + kex + i H]^-1 [drop, in]|^2. Its peaks are the supermodes (ticks at the
@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 from microring import REGIMES, H_AQH, H_zigzag, boundary_sites, default_ports, edge_sites, pump_supermode
 from microring import plot_style as ps
 
@@ -99,7 +99,7 @@ pump, drop = default_ports(r["nx"], r["ny"], "aqh")
 sp = pump_supermode(H, pump, edge=edge_sites(r["nx"], r["ny"]))[2]
 vec = np.linalg.eigh(H)[1]
 draw(f"Drop spectrum of one longitudinal mode (AQH {r['nx']}×{r['ny']}, J = {r['J']:g}) and the mini-comb drive", H, pump, drop, sp, [6, 8, 9],
-     (np.abs(vec[edge_sites(r["nx"], r["ny"])]) ** 2).sum(0) >= 0.85, None, "results/characterization/05_mini_comb_drive.png", True)
+     (np.abs(vec[edge_sites(r["nx"], r["ny"])]) ** 2).sum(0) >= 0.85, None, "lattice_results/characterization/05_mini_comb_drive.png", True)
 
 # zigzag 6 x 6, J = 40 -- the pump and the eight inputs of LunarLander on nine of its ten edge supermodes
 H = H_zigzag(6, 6, J=40.0)
@@ -107,4 +107,4 @@ lam, vec = np.linalg.eigh(H)
 on_edge = ((np.abs(vec[boundary_sites(H)]) ** 2).sum(0) >= 0.6) & (np.abs(lam) < 0.5 * np.abs(lam).max())
 d0 = (lam[34] - lam[26]) / 8
 draw("Drop spectrum of one longitudinal mode (AQH zigzag 6×6, J = 40) and the mini-comb drive for LunarLander", H, 0, len(H) - 5, 26, list(range(27, 35)),
-     on_edge, (-7 * d0, 15 * d0), "results/characterization/05_mini_comb_drive_zigzag.png", False)
+     on_edge, (-7 * d0, 15 * d0), "lattice_results/characterization/05_mini_comb_drive_zigzag.png", False)

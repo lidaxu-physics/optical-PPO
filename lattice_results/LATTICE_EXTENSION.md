@@ -49,7 +49,7 @@ $$F_{r,m}(t) = \delta_{r,\mathrm{in}}\delta_{m,0}\left[F_0 + \sum_k \varepsilon(
 with n_k = σ_k − σ_p and δ the **mini FSR**. This is the equidistant drive of the single ring with
 the FSR replaced by δ.
 
-![The mini-comb drive on the drop spectrum of one longitudinal mode](results/characterization/05_mini_comb_drive.png)
+![The mini-comb drive on the drop spectrum of one longitudinal mode](characterization/05_mini_comb_drive.png)
 
 The figure (`characterization/05_mini_comb_drive.py`) shows every quantity of this formula for the
 preset, on the linear drop spectrum of the pump's longitudinal mode — the transmission from the
@@ -140,7 +140,7 @@ spreads over all boundary rings: at F₀² = 100 the pump line carries 1.1 per r
 lattice but 0.29 on AQH 12 × 12 and less on zigzag 6 × 6, where the mixing products are then four
 orders below the tone lines.
 
-![The mini-comb drive for LunarLander on the zigzag 6 × 6 lattice](results/characterization/05_mini_comb_drive_zigzag.png)
+![The mini-comb drive for LunarLander on the zigzag 6 × 6 lattice](characterization/05_mini_comb_drive_zigzag.png)
 
 The drive used for LunarLander on zigzag 6 × 6 at J = 40, drawn like the figure of the preset: the
 ten edge supermodes are σ = 25…34 (red ticks). The pump sits on σ = 26, the second of them, and the
@@ -203,7 +203,7 @@ question 3 below: on the pendulum yes, on LunarLander no. In the simulation of t
 
 ```
 python PPO_MR.py --env LunarLander-v3 --regime topo --lattice zigzag --nx 6 --ny 6 --J 40 --dt 0.0025 \
-                 --pump_sigma 26 --F0 31.6228 --eps 1.0 --T_relax 2 --T_avg 3.5
+                 --pump_sigma 26 --F0 31.6228 --eps 1.0 --T_relax 2 --T_avg 3.5 --out_dir lattice_results/aqh_66zigzag_results/pattern_free
 ```
 
 The pump power has to be chosen against the comb threshold of this lattice, with all longitudinal
@@ -236,7 +236,7 @@ the tones, below threshold, and anything above threshold has to be simulated wit
 **2. Must every line be read, or do the lines of the edge supermodes suffice?** `edge` reads the
 lines at the drive frequencies (solid in the figures above), `all` every line n δ in the band of H.
 
-![Which lines must be read, and how many longitudinal modes simulated](results/characterization/06_two_questions.png)
+![Which lines must be read, and how many longitudinal modes simulated](characterization/06_two_questions.png)
 
 (`characterization/06_two_questions.py` redraws the figure from the result files of finished runs.)
 
@@ -267,7 +267,7 @@ the light turned down: pump and tones scaled together (F₀² and ε² by 1/10 a
 drive keeps its shape and every four-wave-mixing product weakens with it. The features are
 standardised before the readout, so nothing else changes.
 
-![The same training with the optical power turned down](results/characterization/07_power_control.png)
+![The same training with the optical power turned down](characterization/07_power_control.png)
 
 (`characterization/07_power_control.py`.) On the pendulum the answer is clear: at a tenth and at a
 hundredth of the power the policy ends at −831 ± 531 and −690 ± 540, the level of the linear policy
@@ -294,9 +294,9 @@ before the training the driven lines had a contrast-to-noise ratio of 5–7 at t
 and all other lines below 1. So for this lattice the useful regime is below threshold, where the
 response is periodic and noise-free, not the chaotic comb.
 
-`python animate_mini.py --env Pendulum-v1` (or `--env LunarLander-v3`; `--tag all` for the policy
+`python lattice_results/animate_mini.py --env Pendulum-v1` (or `--env LunarLander-v3`; `--tag all` for the policy
 that reads all lines) replays one greedy episode from a
 training checkpoint: the task, the training curve, the lattice, the linear drop spectrum of the
 mode with the drive lines, the fine lines, and the share of the light on the edge
-(`results/ppo/Pendulum/topo*_pendulum.gif`, `results/ppo/LunarLander/topo*_lunarlander.gif`).
+(`aqh_44_results/topo*_pendulum.gif`, `aqh_66zigzag_results/pattern_free/topo*_lunarlander.gif`).
 

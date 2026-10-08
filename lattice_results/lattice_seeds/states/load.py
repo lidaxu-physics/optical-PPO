@@ -4,13 +4,13 @@ Everything needed is in this folder: `states.npz` (the field of each state) and 
 (the parameters that hold it alive). No run data, no re-sweeping — one clone of this repo on
 any machine is enough.
 
-    python topo_comb_seed/states/load.py --list
-    python topo_comb_seed/states/load.py --check                       # verify the archive
-    python topo_comb_seed/states/load.py nested_soliton_P6500_D6.60 --evolve 60 --plot out.png
+    python lattice_results/lattice_seeds/states/load.py --list
+    python lattice_results/lattice_seeds/states/load.py --check                       # verify the archive
+    python lattice_results/lattice_seeds/states/load.py nested_soliton_P6500_D6.60 --evolve 60 --plot out.png
 
 From your own code:
 
-    from topo_comb_seed.states.load import load_state
+    from lattice_results.lattice_seeds.states.load import load_state
     a, sol, meta = load_state("nested_soliton_P6500_D6.60")      # torch (1, R, N), solver
     a, mean_I = sol.evolve(a, n_steps, accumulate=True)           # ... and carry on
 
@@ -25,7 +25,7 @@ import numpy as np
 import torch
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ROOT = os.path.dirname(os.path.dirname(_HERE))                  # repo root
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_HERE)))   # repo root (lattice_results/lattice_seeds/states/..)
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 from microring import CoupledLLESolver, H_zigzag, boundary_sites, pump_supermode, zigzag_sites

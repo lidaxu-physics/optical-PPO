@@ -12,3 +12,5 @@ results/ppo/*/checkpoints/
 results/ppo/*/logs/
 results/characterization/*_cache.npz
 
+lattice_results/**/checkpoints/
+lattice_results/**/logs/

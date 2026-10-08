@@ -110,4 +110,4 @@ comb threshold (between 1000 and 1500).
 
 Units: κ_in = κ/2 = 1, time in lifetimes 2/κ, Δ > 0 red-detuned (the opposite sign to the
 Topological Photonics Explorer). Rendering: from the repository root,
-`python topo_comb_seed/animate_state.py --init topo_comb_seed/states/states.npz:<archive name> --F2 … --de … --step_lt … --nfr … --out topo_comb_seed/summary/<name>`.
+`python lattice_results/lattice_seeds/animate_state.py --init lattice_results/lattice_seeds/states/states.npz:<archive name> --F2 … --de … --step_lt … --nfr … --out lattice_results/lattice_seeds/summary/<name>`.

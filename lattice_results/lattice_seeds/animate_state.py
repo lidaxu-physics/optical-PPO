@@ -1,7 +1,7 @@
 """Explorer-style 2D portrait + circulation animation of any saved state.
 
-    python topo_comb_seed/animate_state.py --init "runs/P6500/verify_P6500_D+6.60_long.npz:trace" \
-        --F2 6500 --de 6.6 --step_lt 1.0 --nfr 90 --out topo_comb_seed/runs/P6500/nested_soliton \
+    python lattice_results/lattice_seeds/animate_state.py --init "runs/P6500/verify_P6500_D+6.60_long.npz:trace" \
+        --F2 6500 --de 6.6 --step_lt 1.0 --nfr 90 --out lattice_results/lattice_seeds/runs/P6500/nested_soliton \
         --label "single nested soliton circulating the topological edge"
 
 Renders every ring as a circle on the zigzag geometry, arc colour = |psi_r(phi)|^2 (hot,

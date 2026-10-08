@@ -46,9 +46,14 @@ PANELS = {"CartPole": [("Chaotic vs pattern-free ring vs no ring", ["mr_chaos", 
 BEST = {"CartPole": 500, "Pendulum": None, "LunarLander": None}
 
 
+LATTICE_DIRS = {"Pendulum": "lattice_results/aqh_44_results", "LunarLander": "lattice_results/aqh_66zigzag_results/pattern_free",
+                "CartPole": "lattice_results/aqh_44_results"}
+
+
 def load(env, prefix):
     runs = []
-    for path in sorted(glob.glob(f"results/ppo/{env}/{prefix}_seed*.json")):
+    d = LATTICE_DIRS[env] if prefix.startswith("mr_topo") else f"results/ppo/{env}"      # the lattice runs live under lattice_results/
+    for path in sorted(glob.glob(f"{d}/{prefix}_seed*.json")):
         if re.fullmatch(rf"{re.escape(prefix)}_seed\d+\.json", os.path.basename(path)):      # glob returns "\\" on Windows
             runs.append(json.load(open(path)))
     return runs

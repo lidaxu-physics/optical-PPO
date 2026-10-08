@@ -2,7 +2,7 @@
 Stop-and-hold verification of a soliton candidate: ramp in from the blue, hold 500 lifetimes,
 draw the portrait.
 
-    python topo_comb_seed/verify.py --F2 3500 --target 4.8 [--ramp_from 3.6] [--T_hold 500]
+    python lattice_results/lattice_seeds/verify.py --F2 3500 --target 4.8 [--ramp_from 3.6] [--T_hold 500]
 
 Figure (runs/verify_F2<F2>_D<target>.png), four panels:
   1. power during the hold (lattice + drop; flat = stationary candidate);

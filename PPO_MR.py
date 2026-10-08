@@ -30,7 +30,7 @@ never queried twice, since a chaotic ring would answer differently each time.
     python PPO_MR.py --env LunarLander-v3 --policy mr --regime normal --seed 0 --resume   # continue an interrupted run
 
 A resumable checkpoint (readout, critic, optimisers, log, RNGs, ring states) is written every --checkpoint_every
-updates to results/ppo/<Env>/checkpoints/; --resume picks it up, so a killed run costs at most a few minutes.
+updates to <out_dir>/checkpoints/ (results/ppo/<Env> unless --out_dir); --resume picks it up, so a killed run costs at most a few minutes.
 """
 
 import argparse, itertools, json, os, time
@@ -290,6 +290,7 @@ def main():
     p.add_argument("--obs_noise", type=float, default=0.0, help="--policy linear/poly2 only: std of white noise added to s~")
     p.add_argument("--eval_episodes", type=int, default=64, help="greedy episodes after training (0 = skip)")
     p.add_argument("--tag", type=str, default="")
+    p.add_argument("--out_dir", type=str, default=None, help="where the result file and checkpoints go (default results/ppo/<Env>; lattice runs: a folder under lattice_results/)")
     p.add_argument("--threads", type=int, default=1)
     p.add_argument("--checkpoint_every", type=int, default=10, help="save a resumable checkpoint every N updates (0 = never)")
     p.add_argument("--resume", action="store_true", help="continue from the checkpoint of this run if one exists")
@@ -335,7 +336,7 @@ def main():
     print(f"{args.env} | policy = {args.policy}" + (f" ({args.regime}, {args.observable})" if args.policy == "mr" else "")
           + f": {featurizer.n_features} features, {n_trainable} trainable policy parameters", flush=True)
 
-    out_dir = f"results/ppo/{args.env.split('-')[0]}"
+    out_dir = args.out_dir or f"results/ppo/{args.env.split('-')[0]}"
     os.makedirs(f"{out_dir}/checkpoints", exist_ok=True)
     label = args.policy + (f"_{args.regime}" if args.policy == "mr" else "") + (f"_{args.tag}" if args.tag else "")
     name, ckpt = f"{out_dir}/{label}_seed{args.seed}.json", f"{out_dir}/checkpoints/{label}_seed{args.seed}.pt"

@@ -1,7 +1,7 @@
 """
 Nested (fine) structure of one longitudinal tooth, from the snapshot traces of a sweep.
 
-    python topo_comb_seed/nested_mu.py topo_comb_seed/runs/sweep_F2400_J80.npz --mu 4
+    python lattice_results/lattice_seeds/nested_mu.py lattice_results/lattice_seeds/runs/sweep_F2400_J80.npz --mu 4
 
 For every dumped snapshot (6 detunings along the ramp), the complex drop-ring amplitude of
 tooth mu, a_{drop, mu}(t), is Fourier-transformed over the trace. In the pump frame a

@@ -1,7 +1,7 @@
 """
 The one-figure summary of a sweep: 2 x 3 panels.
 
-    python topo_comb_seed/summary.py topo_comb_seed/runs/sweep_F2400_J80.npz [--mu 4] [--panels 1 -1]
+    python lattice_results/lattice_seeds/summary.py lattice_results/lattice_seeds/runs/sweep_F2400_J80.npz [--mu 4] [--panels 1 -1]
 
 Row 1 (vs Delta_eff of the pumped supermode): lattice power (hold mean + end), drop-ring
 power (same), and the viridis spatiotemporal map |psi_drop(phi)|^2.

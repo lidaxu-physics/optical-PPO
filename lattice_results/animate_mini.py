@@ -1,7 +1,7 @@
 """
 One greedy CartPole episode of a --mini_comb policy (pump and tones inside one longitudinal mode), as an animation.
 
-    python animate_mini.py --env Pendulum-v1 [--regime topo|topo_chaos] [--tag ...] [--seed 0] [--ep-seed 7] [--out x.gif|x.mp4]
+    python lattice_results/animate_mini.py --env Pendulum-v1 [--regime topo|topo_chaos] [--tag ...] [--seed 0] [--ep-seed 7] [--out x.gif|x.mp4]
 
 Panels: the task; the lattice (disc size = ring power on a log scale, colour = deviation from the episode mean);
 the fine lines n * delta of the drop ring (what a Fourier transform of its output gives: the lines the policy reads
@@ -20,6 +20,8 @@ from matplotlib import animation
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import FancyArrow, Polygon, Rectangle
 
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))      # the repository root
 from microring import TASKS, boundary_sites, edge_sites, make_ring, zigzag_sites
 from microring import plot_style as ps
 from PPO_MR import LinearReadout, make_env
@@ -31,16 +33,19 @@ p.add_argument("--env", choices=["CartPole-v1", "Pendulum-v1", "LunarLander-v3"]
 p.add_argument("--regime", default="topo")
 p.add_argument("--seed", type=int, default=0, help="which training seed's checkpoint to load")
 p.add_argument("--ep-seed", type=int, default=7, help="episode seed")
-p.add_argument("--out", type=str, default=None, help=".gif (Pillow) or .mp4 (ffmpeg); default results/ppo/CartPole/<tag>.gif")
+p.add_argument("--dir", type=str, default=None, help="folder of the run (result json + checkpoints/); default: the lattice_results folder of the task")
+p.add_argument("--out", type=str, default=None, help=".gif (Pillow) or .mp4 (ffmpeg); default <dir>/<regime>_<task>.gif")
 p.add_argument("--every", type=int, default=3, help="render every n-th control step")
 p.add_argument("--fps", type=int, default=12)
 args = p.parse_args()
 env_name, short = args.env, args.env.split("-")[0]
 label = f"mr_{args.regime}" + (f"_{args.tag}" if args.tag else "")
-out = args.out or f"results/ppo/{short}/{label[3:]}_{short.lower()}.gif"
+DIRS = {"Pendulum": "lattice_results/aqh_44_results", "LunarLander": "lattice_results/aqh_66zigzag_results/pattern_free", "CartPole": "lattice_results/aqh_44_results"}
+run_dir = args.dir or DIRS[short]
+out = args.out or f"{run_dir}/{label[3:]}_{short.lower()}.gif"
 
 # ------------------------------------------------- trained policy + lattice, as the checkpoint describes it
-c = torch.load(f"results/ppo/{short}/checkpoints/{label}_seed{args.seed}.pt", weights_only=False)
+c = torch.load(f"{run_dir}/checkpoints/{label}_seed{args.seed}.pt", weights_only=False)
 rc, task = c["log"]["ring"], TASKS[env_name]
 keys = ("lattice", "nx", "ny", "J", "phi", "dt", "N", "F0", "eps", "T_relax", "T_avg", "tone_sigma", "pump_sigma", "average")
 ring, cfg = make_ring(args.regime, 1, task["obs_scale"], seed=args.seed, squash=task["squash"], T_warmup=1.0,
@@ -92,7 +97,7 @@ print(f"episode: {T} steps, return {ret:.0f}; light in the edge supermodes {shar
 fig, ((ax_task, ax_lc, ax_lat), (ax_res, ax_spec, ax_share)) = plt.subplots(2, 3, figsize=(14.5, 7.6), gridspec_kw=dict(width_ratios=[1.1, 1.0, 1.0]))
 
 # training curve (static): the result file has the whole log and the frozen evaluation, the checkpoint the log up to its save
-res_file = f"results/ppo/{short}/{label}_seed{args.seed}.json"
+res_file = f"{run_dir}/{label}_seed{args.seed}.json"
 rlog = json.load(open(res_file)) if os.path.exists(res_file) else c["log"]
 lc_x = np.array([u["env_steps"] for u in rlog["updates"]]) / 1e3
 lc_y = np.array([u["mean_return"] for u in rlog["updates"]], dtype=float)

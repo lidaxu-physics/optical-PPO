@@ -1,7 +1,7 @@
 """Cold detuning ramp recording the PUMP-MODE power: |b_{sigma_p, mu=0}|^2, the pumped
 edge-supermode's pumped-tooth power (projection b = V^-1 a, threshold.py convention).
 
-    python topo_comb_seed/pumpsweep.py --F2 3500 [--start -3 --stop 10 --steps 130 --T_hold 7.5]
+    python lattice_results/lattice_seeds/pumpsweep.py --F2 3500 [--start -3 --stop 10 --steps 130 --T_hold 7.5]
 
 Saves runs/P{F2}/pumpmode_P{F2}.npz with rows = (de, pump-mode mean, pump-mode end,
 total supermode power mean, total end). Mean = 15 samples spread over the hold.

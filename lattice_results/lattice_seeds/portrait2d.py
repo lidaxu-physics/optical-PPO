@@ -1,7 +1,7 @@
 """
 Explorer-style 2D portrait + formation animation of the single edge soliton.
 
-    python topo_comb_seed/portrait2d.py
+    python lattice_results/lattice_seeds/portrait2d.py
 
 Re-performs the keep-1 pulse surgery on the verified 3-pulse state, then evolves while
 recording frames: the carved state relaxing into the locked single soliton. Each frame is

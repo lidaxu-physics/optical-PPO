@@ -12,13 +12,13 @@ fingerprint to verify it loaded correctly.
 
 ```bash
 pip install -r requirements.txt        # torch, numpy, matplotlib
-python topo_comb_seed/states/load.py --list                     # the catalogue
-python topo_comb_seed/states/load.py --check                    # re-derive every fingerprint
-python topo_comb_seed/states/load.py nested_soliton_P6500_D6.60 --evolve 60 --plot portrait.png
+python lattice_results/lattice_seeds/states/load.py --list                     # the catalogue
+python lattice_results/lattice_seeds/states/load.py --check                    # re-derive every fingerprint
+python lattice_results/lattice_seeds/states/load.py nested_soliton_P6500_D6.60 --evolve 60 --plot portrait.png
 ```
 
 ```python
-from topo_comb_seed.states.load import load_state
+from lattice_results.lattice_seeds.states.load import load_state
 a, sol, meta = load_state("nested_soliton_P6500_D6.60")   # torch (1, R, N) + ready solver
 a, mean_I = sol.evolve(a, 20_000, accumulate=True)        # ... and carry on
 ```
@@ -185,16 +185,16 @@ blue to red while recording:
 Each pump power is one sweep plus its diagnostics; outputs land in `runs/P{F₀²}/`:
 
 ```bash
-python topo_comb_seed/sweep.py     --F2 6500 --start 0 --stop 7 --steps 280 \
+python lattice_results/lattice_seeds/sweep.py     --F2 6500 --start 0 --stop 7 --steps 280 \
                               --snap 5.5 5.9 6.3 6.6 6.9 7.5 --tag fine
-python topo_comb_seed/pumpsweep.py --F2 6500 --start 0 --stop 7 --steps 280 --tag fine
-python topo_comb_seed/summary.py   topo_comb_seed/runs/P6500/sweep_P6500_J80_fine.npz --rownorm
-python topo_comb_seed/stairplot.py topo_comb_seed/runs/P6500/pumpmode_P6500_fine.npz
-python topo_comb_seed/verify.py    --F2 6500 --target 6.6 --T_hold 300 \
-    --init "topo_comb_seed/runs/P6500/sweep_P6500_J80_fine.npz:snap_+6.60" --tag shelf66
-python topo_comb_seed/animate_state.py --F2 6500 --de 6.6 --step_lt 1.0 --nfr 95 \
-    --init "topo_comb_seed/runs/P6500/verify_P6500_D+6.60_long.npz:trace" \
-    --out topo_comb_seed/runs/P6500/nested_soliton --label "single nested soliton"
+python lattice_results/lattice_seeds/pumpsweep.py --F2 6500 --start 0 --stop 7 --steps 280 --tag fine
+python lattice_results/lattice_seeds/summary.py   lattice_results/lattice_seeds/runs/P6500/sweep_P6500_J80_fine.npz --rownorm
+python lattice_results/lattice_seeds/stairplot.py lattice_results/lattice_seeds/runs/P6500/pumpmode_P6500_fine.npz
+python lattice_results/lattice_seeds/verify.py    --F2 6500 --target 6.6 --T_hold 300 \
+    --init "lattice_results/lattice_seeds/runs/P6500/sweep_P6500_J80_fine.npz:snap_+6.60" --tag shelf66
+python lattice_results/lattice_seeds/animate_state.py --F2 6500 --de 6.6 --step_lt 1.0 --nfr 95 \
+    --init "lattice_results/lattice_seeds/runs/P6500/verify_P6500_D+6.60_long.npz:trace" \
+    --out lattice_results/lattice_seeds/runs/P6500/nested_soliton --label "single nested soliton"
 ```
 
 `animate_state.py` also runs straight off the archive — give it `states/states.npz:<state>`

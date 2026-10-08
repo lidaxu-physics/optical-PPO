@@ -1,7 +1,7 @@
 """
 2D dispersion heatmap of the nested comb: ALL teeth unfolded at once.
 
-    python topo_comb_seed/nested2d.py topo_comb_seed/runs/sweep_F2400_J80.npz
+    python lattice_results/lattice_seeds/nested2d.py lattice_results/lattice_seeds/runs/sweep_F2400_J80.npz
 
 One panel per dumped snapshot, the explorer's hmap convention: x = fine frequency nu in the
 pump frame (slow-time FFT of a_{drop, mu}(t)), y = longitudinal mode mu, colour = power

@@ -1,7 +1,7 @@
 """
 Does the lattice compute, or does detecting powers suffice? The same training with the optical power turned down.
 
-    python characterization/07_power_control.py
+    python lattice_results/characterization/07_power_control.py   (from the repository root)
 
 Pump and tones are scaled together (F0^2 and eps^2 by 1/10 and 1/100), so the drive keeps its shape and every four-wave
 mixing product weakens with it; the features are standardised before the readout, so nothing else changes. In the
@@ -16,7 +16,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+DIRS = {"Pendulum": "lattice_results/aqh_44_results", "LunarLander": "lattice_results/aqh_66zigzag_results/pattern_free"}     # lattice runs
 from microring import plot_style as ps
 
 ps.apply()
@@ -25,7 +26,7 @@ RUNS = [("mr_topo", "full power, below threshold", ps.NAVY), ("mr_topo_p0.1", "p
 
 
 def load(env, name):
-    path = f"results/ppo/{env}/{name}_seed0.json"
+    path = f"{DIRS[env]}/{name}_seed0.json"
     return json.load(open(path)) if os.path.exists(path) else None
 
 
@@ -61,6 +62,6 @@ for (env, title), row in zip(envs, ax):
 for x in ax.ravel():
     x.tick_params(labelsize=8)
 fig.tight_layout(rect=(0, 0, 1, 0.95 if len(envs) == 2 else 0.91))
-out = "results/characterization/07_power_control.png"
+out = "lattice_results/characterization/07_power_control.png"
 fig.savefig(out, dpi=130)
 print("saved", out)

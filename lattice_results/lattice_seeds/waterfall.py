@@ -1,8 +1,8 @@
 """Waterfall of pump-mode power vs detuning: one panel per pump power P = F0^2,
 stacked in a single column, LOWEST pump at the BOTTOM, shared detuning axis.
 
-    python topo_comb_seed/waterfall.py          # pump-mode power |b_{sigma_p,0}|^2
-    python topo_comb_seed/waterfall.py comb     # comb power: total supermode power - pump tooth
+    python lattice_results/lattice_seeds/waterfall.py          # pump-mode power |b_{sigma_p,0}|^2
+    python lattice_results/lattice_seeds/waterfall.py comb     # comb power: total supermode power - pump tooth
 """
 import glob, os, sys
 import numpy as np
