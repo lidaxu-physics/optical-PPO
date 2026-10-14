@@ -145,8 +145,14 @@ class LatticeFeatureMap(_RingBase):
     def __init__(self, n_envs, obs_scale, H, fine, F0=10.0, eps=0.6, encoding="offset", squash="tanh", observable="intensity",
                  T_relax=3.0, T_avg=10.0, T_warmup=100.0, sample_dt=0.025,
                  N=1, dt=0.005, Delta=1.76, d2=0.0125, pump_site=0, drive_site=None, readout_sites=(0,), kex=1.0,
-                 average="field", dtype=torch.complex64, device="cpu", seed=0):
+                 average="field", init=None, branch_tol=None, dtype=torch.complex64, device="cpu", seed=0):
         assert observable == "intensity", "the fine lines are read as powers"
+        # init: an (R, N) field every lane starts from (a catalogued nonlinear state) instead of noise. branch_tol: keep
+        # the lattice on that state -- a lane whose pulse contrast (the largest max / median of |psi(phi)|^2 over the
+        # rings: 1 for CW, ~2.4 for the roll, ~16 for a soliton, wherever a travelling one is) has fallen below
+        # (1 - branch_tol) x the warmed-up value after the relaxation (the pattern collapsed) is put back onto `init` and
+        # counted in n_reset. The lattice POWER is not used: the tones change it with the input.
+        self.init, self.branch_tol, self.n_calls, self.n_reset = init, branch_tol, 0, 0
         # average = "field": the Fourier component over the whole window (a periodic response, below the comb threshold);
         # "power": the power in the band delta around every line, averaged over the periods of the window (a chaotic comb,
         # whose lines are broad: there is no component at exactly n delta to pick out). The two agree for a periodic response.
@@ -161,6 +167,7 @@ class LatticeFeatureMap(_RingBase):
         self.fine_delta, self.fine_lines = 2 * np.pi / period, np.asarray(fine["lines"], dtype=int)
         assert np.ptp(self.fine_lines) < self.n_period, "more lines than samples per period"
         T_avg = max(1, int(round(T_avg / period))) * period
+        self.period = period
         self._setup(n_envs, obs_scale, F0, eps, (0,) * len(obs_scale), False, encoding, squash, observable, None, N)
         self.readout_sites = tuple(int(s) for s in readout_sites)
         self.n_features = len(self.readout_sites) * len(self.fine_lines)
@@ -171,16 +178,39 @@ class LatticeFeatureMap(_RingBase):
                                        tone_freqs=[self.fine_delta * n for n in fine["rungs"]], dtype=dtype, device=device)
         self.n_relax, self.n_avg = int(round(T_relax / dt)), int(round(T_avg / dt))
         self.T_relax, self.T_avg = T_relax, T_avg
-        # start from noise with the tones at their s = 0 value
-        self.a = self.solver.random_state(n_envs, generator=torch.Generator().manual_seed(seed))
+        # start from the seed state, or from noise, with the tones at their s = 0 value
+        if init is not None:
+            self._init = torch.as_tensor(np.asarray(init), dtype=dtype, device=device)
+            assert self._init.shape == (self.solver.R, N), f"init state is {tuple(self._init.shape)}, the lattice ({self.solver.R}, {N})"
+            self.a = self._init[None].repeat(n_envs, 1, 1).clone()
+        else:
+            self.a = self.solver.random_state(n_envs, generator=torch.Generator().manual_seed(seed))
         self.solver.set_drive(self.F0, self.encode(torch.zeros(n_envs, self.n_inputs)))
         self.a, _ = self.solver.evolve(self.a, int(round(T_warmup / dt)))
+        self.branch_power = float((self.a.abs() ** 2).sum((1, 2)).mean())
+        self.branch_contrast = float(self.pulse_contrast().mean()) if branch_tol is not None else None
+
+    def pulse_contrast(self):
+        """(B,) the largest, over the rings, of max / median over phi of |psi|^2: the fingerprint of a pattern (1 for CW)."""
+        psi2 = torch.fft.ifft(self.a, norm="forward").abs() ** 2                       # (B, R, N)
+        return (psi2.amax(-1) / psi2.median(-1).values.clamp_min(1e-30)).amax(-1)
+
+    def off_branch(self):
+        """(B,) bool: lanes whose pulse contrast has fallen below (1 - branch_tol) x the seeded state's."""
+        return self.pulse_contrast() < (1 - self.branch_tol) * self.branch_contrast
 
     @torch.no_grad()
     def __call__(self, obs):
         """One symbol per lattice; returns (B, n_features) float32: the powers of the fine lines of the readout ring(s)."""
         self.solver.set_drive(self.F0, self.encode(obs))
         self.a, _ = self.solver.evolve(self.a, self.n_relax)
+        self.n_calls += self.B
+        if self.branch_tol is not None:
+            off = self.off_branch()
+            if bool(off.any()):                                  # back onto the state, then relax again under this input
+                self.a[off] = self._init.to(self.a.dtype)
+                self.a, _ = self.solver.evolve(self.a, self.n_relax)
+                self.n_reset += int(off.sum())
         n_samples, sites = self.n_avg // self.sample_every, list(self.readout_sites)
         c = torch.zeros(self.B, len(sites), len(self.fine_lines), dtype=torch.complex128)
         P = torch.zeros(self.B, len(sites), len(self.fine_lines), dtype=torch.float64)

@@ -22,6 +22,9 @@ The coupled-ring lattice solver (microring/lattice.py) against ground truths.
     held input repeats, the other longitudinal modes stay empty (N = 1 gives the same features),
     "edge" / "bulk" are subsets of "all", (state, clock) is the whole state of the lattice, and the
     preset picks the pump's and the tones' supermodes by itself.
+ 8. Seeded states (init_state): a catalogued state of lattice_results/lattice_seeds is loaded onto every lane with the
+    archive's lattice and pump, its fingerprint survives the warm-up with tones, the branch monitor ignores the
+    pattern-free state and restores a soliton lane flattened to CW, and tone_rate moves the tones.
 """
 
 import os, sys
@@ -282,5 +285,33 @@ except AssertionError:
     pass
 print(f"7.  mini-comb in one longitudinal mode: zero frequencies = static drive, linear response to {err:.1e}, second order ({order:.2f}), "
       f"fine lines = Fourier components of the drop ring, held input repeats to {wander:.0e}: ok")
+
+# -------------------------------------------------- 8. seeded states from the archive
+from lattice_results.lattice_seeds.states.load import diagnostics, LAT
+fmS, cfgS = make_ring("topo", 2, scale, squash="clip", init_state="soliton1_P3500_D4.90", eps=0.3, branch_tol=0.3, T_warmup=2.0,
+                      T_relax=2.0, T_avg=1.2, dtype=torch.complex128)
+assert (cfgS["lattice"], cfgS["nx"], cfgS["J"], cfgS["N"], cfgS["dt"], cfgS["pump_sigma"]) == ("zigzag", 6, 80.0, 64, 0.0025, LAT["pump_supermode_sigma"])
+assert abs(cfgS["F0"] ** 2 - 3500) < 1e-6 and abs(cfgS["Delta"] - (4.9 - LAT["pump_supermode_lambda"])) < 1e-9 and cfgS["readout_sites"] == [55]
+fp = diagnostics(fmS.a[:1].cpu())
+assert abs(fp["lattice_power"] / 16.124 - 1) < 0.02 and fp["drop_phi_contrast"] > 12, fp      # the soliton survived warm-up with tones
+obsS = np.array([[0.0, 0.0, 0.0], [0.5, -0.3, 2.0]])
+fS = fmS(obsS); fmS(obsS)
+assert fmS.n_reset == 0 and (fS[0] - fS[1]).abs().max() / fS.abs().max() > 1e-6
+flat = fmS.a[1].clone(); flat[:, 1:] = 0; fmS.a[1] = flat                        # lane 1 flattened to CW
+assert fmS.off_branch().tolist() == [False, True]
+fmS(obsS)
+assert fmS.n_reset == 1 and fmS.pulse_contrast()[1] > 12                          # put back onto the soliton
+fmL, cfgL = make_ring("topo", 2, scale, squash="clip", init_state="linear_P500_D1.00", eps=1.3, branch_tol=0.3, T_warmup=1.0, T_relax=1.0, T_avg=1.2)
+for _ in range(2):
+    fmL(obsS)
+assert fmL.n_reset == 0 and cfgL["branch_contrast"] is not None and abs(cfgL["branch_contrast"] - 1) < 0.05
+fmR, cfgR = make_ring("topo", 1, scale, squash="clip", init_state="linear_P500_D1.00", eps=1.3, tone_rate=11.0, T_warmup=0.5, T_relax=0.5, T_avg=1.2)
+assert abs(cfgR["fine"]["delta"] - 11.0) < 0.05 and np.allclose(fmR.solver.tone_freqs, fmR.fine_delta * np.array(cfgR["fine"]["rungs"]))
+try:
+    make_ring("topo", 1, scale, init_state="linear_P500_D1.00", tone_rate=20.0, T_warmup=0.5)
+    raise SystemExit("make_ring accepted a tone_rate far from the supermodes")
+except AssertionError:
+    pass
+print("8.  seeded states: archive lattice and pump, soliton survives the tones, branch monitor, tone_rate: ok")
 
 print("all lattice tests passed")

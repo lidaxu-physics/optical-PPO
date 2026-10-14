@@ -273,6 +273,8 @@ def main():
     p.add_argument("--flux", type=float, default=None,
                    help="topo only: flux per plaquette in rad (default: pi/2 for iqh, pi/4 for aqh and zigzag)")
     p.add_argument("--lattice", choices=["iqh", "aqh", "zigzag"], default=None, help="topo only: IQH (Hafezi), AQH (Haldane-type) or AQH with zigzag edges")
+    p.add_argument("--target_Delta", type=float, default=None,
+                   help="topo only: effective detuning of the pump from its supermode (default: the preset's 1.76); ignored with --Delta")
     p.add_argument("--Delta", type=float, default=None, help="topo only: pump detuning (default: auto, the pump's supermode at effective detuning 1.76)")
     p.add_argument("--pump_sigma", type=int, default=None,
                    help="topo only: supermode (index in ascending eigenvalue) the pump sits on (default: auto, edge); the drop ring does not follow it")
@@ -282,6 +284,13 @@ def main():
     p.add_argument("--mini_comb", choices=["edge", "all", "bulk"], default=None,
                    help="topo only: the fine lines of the drop ring that are read -- those of the driven supermodes "
                         "(edge, the default), all in the band of the lattice, or the latter without the former (bulk)")
+    p.add_argument("--init_state", type=str, default=None,
+                   help="topo only: start every lattice from this catalogued state of lattice_results/lattice_seeds (sets the lattice, pump, modes)")
+    p.add_argument("--branch_tol", type=float, default=None,
+                   help="topo only, with --init_state: put a lattice back onto the state when its pulse contrast falls below (1 - this) x the warmed-up value")
+    p.add_argument("--tone_rate", type=float, default=None, help="topo only: put the tones at n x this instead of n x the fitted mini FSR")
+    p.add_argument("--average", choices=["field", "power"], default=None, help="topo only: read the Fourier component (periodic response) or the band power per period (chaotic)")
+    p.add_argument("--T_warmup", type=float, default=None, help="chaos / topo: lifetimes of warm-up before calibration")
     p.add_argument("--drop_site", type=int, default=None,
                    help="topo only: ring (index y * nx + x) whose drop port is read (default: the corner downstream of the automatic edge supermode)")
     p.add_argument("--dt", type=float, default=None, help="time step of the solver (default: the regime's preset; a lattice needs J dt << 1)")
@@ -312,14 +321,15 @@ def main():
         overrides = dict(eps=args.eps, encoding=args.encoding, observable=args.observable, squash=task["squash"],
                          feature_modes=None if hw == 0 else list(range(-hw, hw + 1)), dt=args.dt, N=args.N, F0=args.F0)
         if args.regime == "chaos" or args.regime.startswith("topo"):
-            overrides.update(T_relax=args.T_relax, T_avg=args.T_avg)
+            overrides.update(T_relax=args.T_relax, T_avg=args.T_avg, T_warmup=args.T_warmup)
         else:
             overrides.update(detector_noise=args.detector_noise)
         if args.regime.startswith("topo"):
             overrides.update(nx=args.nx, ny=args.ny, J=args.J, phi=args.flux,
-                             lattice=args.lattice, Delta=args.Delta,
+                             lattice=args.lattice, Delta=args.Delta, target_Delta=args.target_Delta,
                              pump_sigma=args.pump_sigma, tone_sigma=args.tone_sigma,
-                             mini_comb=args.mini_comb, drop_site=args.drop_site)
+                             mini_comb=args.mini_comb, drop_site=args.drop_site, init_state=args.init_state, branch_tol=args.branch_tol,
+                             tone_rate=args.tone_rate, average=args.average)
         featurizer, ring_cfg = make_ring(args.regime, args.n_envs, task["obs_scale"], seed=args.seed, **overrides)
         mean, std = calibrate(featurizer, seed=args.seed)
         policy = LinearReadout(featurizer.n_features, n_actions, mean, std)
@@ -358,7 +368,7 @@ def main():
             featurizer.a = c["ring_a"]
             if hasattr(featurizer, "f"):
                 featurizer.f = c["ring_f"]
-            for k in ("n_calls", "n_substepped", "n_reprepared", "clock"):
+            for k in ("n_calls", "n_reset", "n_substepped", "n_reprepared", "clock"):
                 if k in c:
                     setattr(featurizer, k, c[k])
         obs = np.stack([env.reset(seed=args.seed * 10_000 + 1000 * first_update + i)[0] for i, env in enumerate(envs)])
@@ -372,7 +382,7 @@ def main():
             c["ring_a"] = featurizer.a
             if hasattr(featurizer, "f"):
                 c["ring_f"] = featurizer.f
-            for k in ("n_calls", "n_substepped", "n_reprepared", "clock"):
+            for k in ("n_calls", "n_reset", "n_substepped", "n_reprepared", "clock"):
                 if hasattr(featurizer, k):
                     c[k] = getattr(featurizer, k)
         torch.save(c, ckpt + ".tmp"); os.replace(ckpt + ".tmp", ckpt)      # atomic: a kill mid-write leaves the old file
@@ -405,6 +415,9 @@ def main():
         if args.checkpoint_every and (update + 1) % args.checkpoint_every == 0 and update + 1 < args.n_updates:
             save_checkpoint(update)
 
+    if getattr(featurizer, "branch_tol", None) is not None:   # seeded lattice state: how often did a lane fall off it?
+        log["ring_health"] = dict(calls=featurizer.n_calls, reset=featurizer.n_reset, reset_fraction=featurizer.n_reset / max(1, featurizer.n_calls))
+        print("lattice health:", log["ring_health"])
     if hasattr(featurizer, "unstable_fraction"):              # static ring: did it stay on a stable branch?
         log["ring_health"] = dict(unstable_fraction=featurizer.unstable_fraction(), calls=featurizer.n_calls,
                                   substepped=featurizer.n_substepped, reprepared=featurizer.n_reprepared)

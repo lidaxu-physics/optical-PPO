@@ -1,0 +1,1 @@
+--env Pendulum-v1 --regime topo --lattice zigzag --J 80 --target_Delta 1.0 --N 1 --dt 0.0025 --eps 1.3 --T_relax 12 --T_avg 1.2 --T_warmup 20 --nx 4 --ny 4 --F0 22.360680 --tag zz4

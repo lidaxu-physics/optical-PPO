@@ -56,6 +56,22 @@ def make_ring(regime, n_envs, obs_scale, seed=0, **overrides):
     cfg = {**REGIMES[regime], **{k: v for k, v in overrides.items() if v is not None}}
     kind = cfg.pop("kind")
     if kind == "lattice":
+        # init_state: start every lane from a catalogued nonlinear state of lattice_results/lattice_seeds (pump only); the
+        # lattice, the pump and the modes are then those of the archive, and the tones are added on top.
+        init_state, tone_rate = cfg.pop("init_state", None), cfg.pop("tone_rate", None)
+        if init_state is not None:
+            from lattice_results.lattice_seeds.states.load import load_state, LAT
+            frame, _sol, meta = load_state(init_state)
+            cfg.update(nx=LAT["nx"], ny=LAT["ny"], J=LAT["J"], phi=LAT["phi"], lattice="zigzag", pump_sigma=LAT["pump_supermode_sigma"],
+                       drop_site=LAT["drop_site"], kex=LAT["kex"], d2=LAT["d2"], F0=float(np.sqrt(meta["F0_squared"])),
+                       target_Delta=meta["Delta_eff"], Delta=None, init=frame[0].numpy())
+            for k in ("N", "dt"):                                   # the archive's unless asked for explicitly
+                if overrides.get(k) is None:
+                    cfg[k] = LAT["N_modes" if k == "N" else "dt"]
+            if cfg["N"] != frame.shape[-1]:                         # fewer modes asked for: keep the archive's lowest |mu|
+                assert cfg["N"] <= frame.shape[-1], f"N = {cfg['N']} exceeds the archive's {frame.shape[-1]}"
+                keep = np.fft.fftfreq(cfg["N"], d=1.0 / cfg["N"]).astype(int)          # 0, 1, ..., -1 in fft order
+                cfg["init"] = frame[0].numpy()[:, keep % frame.shape[-1]]
         nx, ny, J, phi, lat = (cfg.pop(k) for k in ("nx", "ny", "J", "phi", "lattice"))
         assert lat in ("iqh", "aqh", "zigzag"), "lattice is 'iqh', 'aqh' or 'zigzag'"
         phi = float(np.pi / 2 if lat == "iqh" else np.pi / 4) if phi is None else phi     # the flux of each lattice type
@@ -99,11 +115,16 @@ def make_ring(regime, n_envs, obs_scale, seed=0, **overrides):
         edge_lines = sorted({0, *(int(k) for k in n)})
         lines = {"edge": edge_lines, "all": list(every), "bulk": [k for k in every if k not in edge_lines]}[mini]
         cfg.pop("feature_modes", None)                      # the single-ring line selection does not apply
+        if tone_rate is not None:                           # tones on another rung spacing (e.g. the repetition rate of a travelling state)
+            assert np.abs(tone_rate * n - Om).max() < 1.5, f"tone_rate {tone_rate} is far from the supermodes (delta = {delta:.3f})"
+            delta = float(tone_rate)
         cfg["fine"] = dict(delta=delta, rungs=[int(k) for k in n], lines=lines)
         fm = LatticeFeatureMap(n_envs, obs_scale, H, pump_site=pump, readout_sites=(drop,), seed=seed, **cfg)
         cfg["fine"]["delta"], cfg["T_avg"] = fm.fine_delta, fm.T_avg        # as rounded to the sample grid
+        cfg.pop("init", None)                                # the frame itself is not configuration
         return fm, {"regime": regime, "kind": kind, "nx": nx, "ny": ny, "J": J, "phi": phi, "lattice": lat, "pump_site": pump,
-                    "readout_sites": [drop], "pump_sigma": int(pump_sigma), "tone_sigma": [int(s) for s in tone_sigma], **cfg}
+                    "readout_sites": [drop], "pump_sigma": int(pump_sigma), "tone_sigma": [int(s) for s in tone_sigma],
+                    "init_state": init_state, "tone_rate": tone_rate, "branch_power": fm.branch_power, "branch_contrast": fm.branch_contrast, **cfg}
     cls = ChaoticRingFeatureMap if kind == "chaotic" else StaticRingFeatureMap
     return cls(n_envs, obs_scale, seed=seed, **cfg), {"regime": regime, "kind": kind, **cfg}
 

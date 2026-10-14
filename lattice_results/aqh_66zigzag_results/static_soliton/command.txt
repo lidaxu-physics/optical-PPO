@@ -1,0 +1,1 @@
+--init_state soliton1_P3500_D4.90 --eps 0.5 --T_relax 10 --T_avg 1.2 --branch_tol 0.5 --T_warmup 20

@@ -3,7 +3,11 @@
 This note documents what was added to the single-ring repository: a 2D lattice of coupled Kerr
 microrings whose **edge supermodes, inside one longitudinal mode, carry the inputs** — a mini-comb —
 used as the policy's feature map in place of the single ring. It covers the idea, the model, the
-implementation, how it was validated, and the first results.
+implementation, how it was validated, and the first results (AQH 4 × 4, LunarLander on zigzag 6 × 6);
+then, in the second half, the systematic part: the zigzag 6 × 6 lattice operated in five of its
+nonlinear states (below threshold, Turing roll, static soliton, nested soliton, chaotic comb) as the
+Pendulum policy against budget-matched ring-free baselines, the size scan from 4 × 4 to 12 × 12,
+and what this leaves the lattice with against the single ring.
 
 ## Why
 
@@ -300,3 +304,145 @@ training checkpoint: the task, the training curve, the lattice, the linear drop 
 mode with the drive lines, the fine lines, and the share of the light on the edge
 (`aqh_44_results/topo*_pendulum.gif`, `aqh_66zigzag_results/pattern_free/topo*_lunarlander.gif`).
 
+## The zigzag 6 × 6 lattice in its nonlinear states
+
+Everything above drives the lattice below its comb threshold, where the response is a stationary
+mini-comb. The single-ring part of this repository found that the ring's *state* decides whether it
+can be used at all: no patterns (stationary, unique) solves the tasks, the chaotic comb solves them
+more slowly, Turing rolls and the soliton only tolerate tones so weak that they act as transducers.
+The same question for the lattice is answered here on Pendulum with five states of the zigzag 6 × 6
+lattice (J = 80, pump on the edge supermode σ = 29, drop ring 55), taken from the archive
+`lattice_seeds/` and loaded as the initial state of every lane (`--init_state`); the tones are added
+on top (σ = 28, 30, 31, i.e. n = −1, +1, +2, δ = 10.52, four lines read).
+
+### How each state is driven and read
+
+| state (archive key) | F₀² | ε (in units of F₀) | modes | relax / average (lifetimes) | why |
+|---|---|---|---|---|---|
+| below threshold `linear_P500_D1.00` | 500 | 1.3 (0.06) | 1 | 12 / 1.2 | the response is exactly periodic once relaxed (rate 0.5 per lifetime): the fine comb |c_n|² is stationary to 1e−9, two periods suffice |
+| Turing roll `turing14_P2500_D0.10` | 2500 | 1.0 (0.02) | 64 | 15 / 1.2 | 14 pulses per boundary ring; survives tones to ε ≈ 2, ε = 4 loses a lane; relaxation rate 0.21 |
+| static soliton `soliton1_P3500_D4.90` | 3500 | 0.5 (0.008) | 64 | 10 / 1.2 | one pulse per boundary ring; survives ε ≤ 0.5 only (ε = 1 loses a lane, ε ≥ 2 collapses at warm-up) |
+| nested soliton `nested_soliton_P6500_D6.60` | 6500 | 0.5 (0.006) | 64 | 30 / 1.12 | a travelling envelope circulating the edge once per 0.560 lifetimes; the tones are put at its own repetition rate 11.22 (`--tone_rate`), which locks it (period-to-period drift 1e−3), relaxation rate 0.11 |
+| chaotic comb `chaos_P6500_D4.50` | 6500 | 8 (0.10) | 64 | 10 / 25 | no periodicity: the band power around each line is averaged over 25 lifetimes (`--average power`), as for the chaotic single ring; feature noise 2–11 % per call |
+
+The pattern states carry a *branch monitor* (`--branch_tol 0.5`): a lane whose pulse contrast
+(largest max/median of |ψ(φ)|² over the rings) falls below half its warmed-up value has collapsed
+to CW and is put back onto the archive state. `state_checks.py` holds the three checks made before
+training: the per-period statistics of every line (`stats_*.png`: a periodic state has a
+vanishing coefficient of variation, chaos a Gaussian with correlation time 0.4–1 lifetime and an
+ergodicity gap below 1 %), the tolerance of the state to the tone amplitude, and the relaxation
+after a step of the input, which fixed the relaxation times above.
+
+### Results
+
+16 lattices × 32 steps × 400 updates (205 k environment steps), three seeds each, frozen greedy
+evaluation over 16 episodes. The same budget was given to the two ring-free policies of the main
+repository (`aqh_66zigzag_results/baselines/`): the linear readout of the squashed observation,
+and `poly2`, the readout of the observation and all its pairwise products.
+
+![Pendulum on the five states](aqh_66zigzag_results/states_pendulum.png)
+
+| policy | frozen evaluation, mean ± std over seeds | per seed |
+|---|---|---|
+| poly2, no ring | **−154 ± 31** | −164 / −113 / −186 |
+| below threshold, 4 lines | −347 ± 71 | −269 / −442 / −332 |
+| below threshold, all 68 lines | −406 ± 142 | −326 / −286 / −606 |
+| Turing roll | −461 ± 219 | −769 / −281 / −334 |
+| static soliton | −586 ± 195 | −543 / −371 / −843 |
+| linear, no ring | −752 ± 322 | −299 / −947 / −1011 |
+| nested soliton (150 updates, extension to 400 running) | −949 ± 205 | −1019 / −1157 / −671 |
+| chaotic comb (150 updates) | −1114 ± 124 | −1059 / −997 / −1287 |
+
+For reference, the stationary single ring of the main results reaches −196 / −206 / −252 with
+512 k steps, 2.5 × this budget. One animation per state (`<state>/topo_pendulum.mp4`, the best seed)
+and the command of each run (`<state>/command.txt`) are in the state folders.
+
+What the table says:
+
+* **The ordering of the states is the single ring's.** Below threshold is the best lattice state,
+  then the roll, then the soliton, then chaos. The roll and the soliton keep their pattern through
+  the whole training (zero resets in 205 k calls) but only because the tones are 0.008–0.02 F₀, a
+  tenth of what the pattern-free state takes; at that strength the optical response is close to
+  linear and the features add little — exactly the "transducer, not computer" of the single-ring
+  rolls and soliton. The nested soliton is worse still: it falls off its branch in 17 % of the
+  calls and only one seed learns.
+* **The chaotic comb does not learn at all** (the training curve stays at −1100 from the first
+  update to the last). The reason is in the features, not the noise: with the training settings
+  the four lines have a signal-to-noise of 5–9 per call and decode the three inputs with R² of
+  0.63–0.86, but the products cos θ · θ̇ and sin θ · θ̇, which the swing-up needs, are not in them
+  (R² −0.04 and 0.19, against 0.38 and 0.28 for the four lines below threshold). In a periodic state
+  the line amplitudes are coherent and |c_n|² contains the interference of the pump–tone mixing
+  products, which is where those cross terms come from; the 25-lifetime power average of a chaotic
+  field scrambles the phases and leaves sums of powers, i.e. features that are linear in the
+  squared inputs — the same thing a linear policy sees, and the same return. Reading all 68 lines
+  does not help: the other 58 have a signal-to-noise of 0.5–0.9, pure chaos. The chaotic single
+  ring of the main results (−428) escaped this because its tones were 0.32 F₀, strong enough for
+  the coherent mixing products to stand above the chaos on 17 read lines; here the tones were
+  0.10 F₀. A run at 0.3 F₀ reading all lines is the obvious next test and was not made.
+* **Reading all 68 lines below threshold** makes the products available (ridge R² 0.95 and 0.87
+  from the 68 lines) and the policies train faster and more alike (−260 to −300 in the last
+  updates for all seeds), but the greedy evaluation is not better than with four lines: 68 weak
+  lines with a relaxation residual of 1e−3 give a brittle policy that fails from some initial
+  conditions (one episode at −1500 in every seed). The same was seen on the AQH 4 × 4 lattice.
+* **Nothing beats poly2.** The explicit quadratic readout, with 30 weights and no optics, is the
+  best policy at this budget, as in the main results. As there, no representational advantage is
+  claimed for the lattice: its interest is physical — the mini FSR in the GHz range and the
+  scalability below — not a better feature map. The baselines matter for reading the soliton
+  result as well: the soliton (−586) is better than the *linear* policy (−752) only because the
+  detected intensities are already quadratic in the inputs, so the fair "no computing" reference
+  is poly2, and against it every optical state is behind.
+
+### A caveat from the 256-mode archive
+
+`lattice_seeds_256modes/` repeats the state hunt with 256 longitudinal modes per ring instead of
+64. Two of the states used here do not survive the finer grid: the static k = 0 soliton of
+`soliton1_P3500_D4.90` is metastable at 256 modes (it decays to CW within ~500 lifetimes and no
+stable one was found in P = 3500–5500, Δ_eff = 3.6–4.6), and the nested soliton at Δ_eff = 6.60
+decays too (it lives only at Δ_eff = 5.60, and only from a seed). The likely reason is that the
+64-mode truncation cuts the channel through which the comb's tail leaks into other supermodes
+(d₂μ² reaches the width of the supermode band at |μ| ≈ 40–70). The Turing roll (15 pulses instead
+of 14) and the chaotic comb exist at both resolutions, and the pattern-free state has only μ = 0
+occupied, so N = 1 is exact for it. The two soliton rows above are therefore results *inside the
+64-mode model*; their conclusion (too fragile to drive hard) is the same one the 256-mode archive
+reaches directly.
+
+## Does the lattice size matter?
+
+`size_compare/` repeats the pattern-free run on zigzag lattices of 4 × 4 to 12 × 12 rings (24 to
+264 rings; J = 80, Δ_eff = 1, N = 1, ε = 1.3, same budget and seeds, the 6 × 6 point being the run
+above). The pump spread over a longer boundary gives each ring less light, so two protocols were
+run: the same pump F₀² = 500 on every lattice, and F₀² scaled (188, 500, 834, 1291, 1832) so that
+the mean |a|² over the boundary rings is the 6 × 6 value, 0.655.
+
+![Pendulum versus lattice size](size_compare/sizes_pendulum.png)
+
+| | 4 × 4 | 6 × 6 | 8 × 8 | 10 × 10 | 12 × 12 |
+|---|---|---|---|---|---|
+| fixed pump F₀² = 500 | −467 ± 85 | −347 ± 71 | −441 ± 115 | −678 ± 226 | −713 ± 230 |
+| fixed intensity per boundary ring | −350 ± 49 | −347 ± 71 | −293 ± 101 | −370 ± 97 | −293 ± 53 |
+
+At fixed intensity per ring the size does not matter: all five lattices land at −290 … −370, within
+the seed scatter, and the larger ones learn fastest (their pump, and with it the tones, is
+stronger). At fixed pump the return falls with the size, from −347 at 6 × 6 to −713 at 12 × 12, and
+that is the intensity per ring falling from 0.66 to 0.11, not the lattice getting bigger; 4 × 4 at
+F₀² = 500 (intensity 1.65) is also worse than at the matched 188, so more Kerr shift is not better
+either. What the size does change is the mini FSR, 18.2 at 4 × 4 down to 4.7 at 12 × 12, i.e. a
+denser fine comb with a longer period (0.35 to 1.35 lifetimes). The policy quality in the
+pattern-free state is set by the nonlinearity per ring; a larger lattice is neither better nor
+worse once that is matched. Whether more edge supermodes help a task with more inputs than
+Pendulum's three was not tested (all runs read four lines). One animation per size and protocol is
+in `size_compare/<protocol>/zz<n>/`.
+
+## Where this leaves the lattice against the single ring
+
+* It does what the single ring does, from one longitudinal mode and GHz-spaced lines, and it
+  learns the same tasks to a comparable level (−347 against −196 … −252, at 40 % of the budget and
+  with the seeds still rising). It does not do it better, and nothing optical beats poly2.
+* The useful state is the one without patterns, as for the ring. Rolls and solitons are
+  transducers; the chaotic comb of a lattice is worse than the ring's because its power average
+  loses the cross terms unless the tones are strong.
+* The size is free: at matched intensity per ring, 24 and 264 rings perform alike. This is the
+  one property the single ring cannot offer, and with the GHz mini FSR it is the lattice's case.
+* Open: the lattice chaos at 0.3 F₀ with all lines; more inputs on a larger lattice; the
+  256-mode states (roll, nested pair, nested soliton at Δ_eff 5.60) as feature maps; 64 evaluation
+  episodes and the single ring's budget for a strict comparison.

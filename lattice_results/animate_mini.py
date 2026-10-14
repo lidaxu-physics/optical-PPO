@@ -47,8 +47,9 @@ out = args.out or f"{run_dir}/{label[3:]}_{short.lower()}.gif"
 # ------------------------------------------------- trained policy + lattice, as the checkpoint describes it
 c = torch.load(f"{run_dir}/checkpoints/{label}_seed{args.seed}.pt", weights_only=False)
 rc, task = c["log"]["ring"], TASKS[env_name]
-keys = ("lattice", "nx", "ny", "J", "phi", "dt", "N", "F0", "eps", "T_relax", "T_avg", "tone_sigma", "pump_sigma", "average")
-ring, cfg = make_ring(args.regime, 1, task["obs_scale"], seed=args.seed, squash=task["squash"], T_warmup=1.0,
+keys = ("lattice", "nx", "ny", "J", "phi", "dt", "N", "F0", "eps", "T_relax", "T_avg", "tone_sigma", "pump_sigma", "average",
+        "init_state", "tone_rate", "branch_tol", "target_Delta", "Delta")
+ring, cfg = make_ring(args.regime, 1, task["obs_scale"], seed=args.seed, squash=task["squash"], T_warmup=1.0 if rc.get("init_state") is None else 5.0,
                       mini_comb="all", **{k: rc[k] for k in keys if k in rc})       # read ALL lines here; the policy uses some
 lines, used = list(cfg["fine"]["lines"]), list(rc["fine"]["lines"])
 sel = [lines.index(n) for n in used]
@@ -135,8 +136,11 @@ if len(rungs) > 5:
 ax_res.set_yscale("log"); ax_res.set_xlabel("frequency from the pump (half-linewidths)", fontsize=9)
 ax_res.set_ylabel("linear drop transmission", fontsize=9); ax_res.tick_params(labelsize=8)
 ax_res.set_title("drop spectrum of the mode and the drive lines", fontsize=10, pad=14)
-fig.suptitle((f"Chaotic comb ({cfg['N']} longitudinal modes, " if chaos else "Mini-comb inside one longitudinal mode (") +
-             f"{nx}×{ny} {cfg['lattice']} lattice) as the {short} policy",
+state_name = {"linear": "below threshold", "turing14": "Turing roll", "soliton1": "static soliton", "nested_soliton": "nested soliton",
+              "chaos": "chaotic comb"}.get((rc.get("init_state") or "").split("_P")[0], None)
+fig.suptitle((f"{state_name} of the {nx}×{ny} {cfg['lattice']} lattice ({cfg['N']} modes) as the {short} policy" if state_name else
+              (f"Chaotic comb ({cfg['N']} longitudinal modes, " if chaos else "Mini-comb inside one longitudinal mode (") +
+              f"{nx}×{ny} {cfg['lattice']} lattice) as the {short} policy"),
              x=0.02, ha="left", fontsize=12, fontweight="semibold")
 
 arrow = [None]
