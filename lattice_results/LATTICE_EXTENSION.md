@@ -350,7 +350,7 @@ and `poly2`, the readout of the observation and all its pairwise products.
 | Turing roll | −461 ± 219 | −769 / −281 / −334 |
 | static soliton | −586 ± 195 | −543 / −371 / −843 |
 | linear, no ring | −752 ± 322 | −299 / −947 / −1011 |
-| nested soliton (150 updates, extension to 400 running) | −949 ± 205 | −1019 / −1157 / −671 |
+| nested soliton | −794 ± 201 | −1026 / −820 / −536 |
 | chaotic comb (150 updates) | −1114 ± 124 | −1059 / −997 / −1287 |
 
 For reference, the stationary single ring of the main results reaches −196 / −206 / −252 with
@@ -364,8 +364,10 @@ What the table says:
   the whole training (zero resets in 205 k calls) but only because the tones are 0.008–0.02 F₀, a
   tenth of what the pattern-free state takes; at that strength the optical response is close to
   linear and the features add little — exactly the "transducer, not computer" of the single-ring
-  rolls and soliton. The nested soliton is worse still: it falls off its branch in 17 % of the
-  calls and only one seed learns.
+  rolls and soliton. The nested soliton is worse still, below the linear policy: it falls off its
+  branch in 10 % of the calls (each time the lane is put back onto the archive state and relaxed
+  again), one seed reaches −536 and the other two stay at −820 and −1026 with learning curves that
+  hardly move.
 * **The chaotic comb does not learn at all** (the training curve stays at −1100 from the first
   update to the last). The reason is in the features, not the noise: with the training settings
   the four lines have a signal-to-noise of 5–9 per call and decode the three inputs with R² of
